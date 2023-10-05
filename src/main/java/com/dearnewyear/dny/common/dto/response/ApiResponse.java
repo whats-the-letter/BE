@@ -1,16 +1,8 @@
 package com.dearnewyear.dny.common.dto.response;
 
-import lombok.Getter;
+public record ApiResponse(Integer status, String message, Object data) {
 
-@Getter
-public class ApiResponse {
-    private final Integer status;
-    private final String message;
-    private final Object data;
-
-    public ApiResponse(Integer status, String message, Object data) {
-        this.status = status;
-        this.message = message;
-        this.data = data;
+    public static ApiResponse of(Integer status, String message, Object data) {
+        return new ApiResponse(status, message, data);
     }
 }
