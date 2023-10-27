@@ -1,6 +1,6 @@
 package com.dearnewyear.dny.album.repository;
 
-import jakarta.persistence.*;
+import javax.persistence.*;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 
