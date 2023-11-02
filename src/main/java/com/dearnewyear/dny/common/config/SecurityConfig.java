@@ -1,5 +1,6 @@
 package com.dearnewyear.dny.common.config;
 
+import com.dearnewyear.dny.common.jwt.JwtAuthenticationFilter;
 import com.dearnewyear.dny.common.jwt.JwtTokenProvider;
 import lombok.RequiredArgsConstructor;
 import org.springframework.context.annotation.Configuration;
