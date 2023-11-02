@@ -1,5 +1,8 @@
 package com.dearnewyear.dny.common.dto.response;
 
+import lombok.Builder;
+
+@Builder
 public class ApiResponse {
 
     private final Integer status;
