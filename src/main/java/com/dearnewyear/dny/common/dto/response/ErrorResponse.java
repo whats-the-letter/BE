@@ -4,14 +4,10 @@ import com.dearnewyear.dny.common.error.ErrorCode;
 import lombok.Getter;
 
 @Getter
-public final class ErrorResponse {
+public final class ErrorResponse extends ApiResponse {
 
-    private final Integer status;
-    private final String message;
-
-    ErrorResponse(Integer status, String message) {
-        this.status = status;
-        this.message = message;
+    public ErrorResponse(Integer status, String message) {
+        super(status, message, null);
     }
 
     public static ErrorResponse of(ErrorCode errorCode) {
