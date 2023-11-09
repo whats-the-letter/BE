@@ -1,7 +1,9 @@
 package com.dearnewyear.dny.user.domain;
 
+import com.dearnewyear.dny.user.domain.constant.MainBackground;
+import com.dearnewyear.dny.user.domain.constant.MainLp;
+import com.dearnewyear.dny.user.dto.request.SignupRequest;
 import javax.persistence.*;
-import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import org.springframework.stereotype.Component;
@@ -23,12 +25,23 @@ public class User {
     @Column(name = "email", nullable = false, unique = true)
     private String email;
 
+    @Column(name = "main_background", nullable = false)
+    private MainBackground mainBackground;
+
+    @Column(name = "main_lp", nullable = false)
+    private MainLp mainLp;
+
     @OneToOne(mappedBy = "user", cascade = CascadeType.ALL)
     private RefreshToken refreshToken;
 
-    @Builder
-    public User(String userName, String email, RefreshToken refreshToken) {
-        this.userName = userName;
-        this.email = email;
+    public User(SignupRequest request) {
+        this.userName = request.getUserName();
+        this.email = request.getEmail();
+        this.mainBackground = MainBackground.valueOf(request.getMainBackground());
+        this.mainLp = MainLp.valueOf(request.getMainLp());
+    }
+
+    public void updateRefreshToken(RefreshToken refreshToken) {
+        this.refreshToken = refreshToken;
     }
 }
