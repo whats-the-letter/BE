@@ -1,7 +1,9 @@
 package com.dearnewyear.dny.common.dto.response;
 
 import com.dearnewyear.dny.common.error.ErrorCode;
+import lombok.Getter;
 
+@Getter
 public final class ErrorResponse {
 
     private final Integer status;

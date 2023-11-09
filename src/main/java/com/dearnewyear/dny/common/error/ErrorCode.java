@@ -26,12 +26,13 @@ public enum ErrorCode {
     USER_ALREADY_EXIST(400, "U002", "이미 존재하는 사용자입니다."),
     USER_PARAMS_REQUIRED(400, "U003", "사용자 정보가 필요합니다."),
     INVALID_USER_PARAMS(400, "U004", "사용자 정보가 올바르지 않습니다."),
-    USER_NAME_ALREADY_EXIST(400, "U005", "이미 존재하는 사용자 이름입니다."),
-    USER_NOT_LOGIN(401, "U006", "로그인이 필요합니다."),
-    ACCESS_TOKEN_REQUIRED(401, "U007", "Access Token이 누락되었습니다."),
-    TOKEN_EXPIRED(401, "U008", "토큰이 만료되었습니다."),
-    INVALID_TOKEN(401, "U009", "유효하지 않은 토큰입니다."),
-    INVALID_MAIN_ASSET(400, "U010", "메인 에셋 정보가 올바르지 않습니다."),
+    KAKAO_OAUTH2_ERROR(400, "U005", "카카오 OAuth2 인증에 실패하였습니다."),
+    USER_NAME_ALREADY_EXIST(400, "U006", "이미 존재하는 사용자 이름입니다."),
+    USER_NOT_LOGIN(401, "U007", "로그인이 필요합니다."),
+    ACCESS_TOKEN_REQUIRED(401, "U008", "Access Token이 누락되었습니다."),
+    TOKEN_EXPIRED(401, "U009", "토큰이 만료되었습니다."),
+    INVALID_TOKEN(401, "U010", "유효하지 않은 토큰입니다."),
+    INVALID_MAIN_ASSET(400, "U011", "메인 에셋 정보가 올바르지 않습니다."),
 
     /**
      * Album Domain
