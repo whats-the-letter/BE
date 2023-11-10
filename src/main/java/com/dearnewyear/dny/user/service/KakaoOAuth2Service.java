@@ -63,7 +63,7 @@ public class KakaoOAuth2Service {
         }
     }
 
-    public boolean getKakaoUser(String token, HttpServletResponse response) {
+    public String getKakaoUser(String token, HttpServletResponse response) {
         RestTemplate restTemplate = new RestTemplate();
 
         HttpHeaders headers = new HttpHeaders();
@@ -74,9 +74,6 @@ public class KakaoOAuth2Service {
         if (kakaoResponse.getStatusCode() == HttpStatus.OK) {
             Map<String, Object> kakaoAccount = (Map<String, Object>) kakaoResponse.getBody().get("kakao_account");
             String email = (String) kakaoAccount.get("email");
-
-            System.out.println("email: " + email);
-
             return userService.chkAndLoginUser(email, response);
         } else {
             throw new CustomException(ErrorCode.KAKAO_OAUTH2_ERROR);
