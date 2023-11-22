@@ -31,17 +31,10 @@ public class User {
     @Column(name = "main_lp", nullable = false)
     private MainLp mainLp;
 
-    @OneToOne(mappedBy = "user", cascade = CascadeType.ALL)
-    private RefreshToken refreshToken;
-
     public User(SignupRequest request) {
         this.userName = request.getUserName();
         this.email = request.getEmail();
         this.mainBackground = MainBackground.valueOf(request.getMainBackground());
         this.mainLp = MainLp.valueOf(request.getMainLp());
-    }
-
-    public void updateRefreshToken(RefreshToken refreshToken) {
-        this.refreshToken = refreshToken;
     }
 }
