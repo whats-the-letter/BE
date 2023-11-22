@@ -26,9 +26,9 @@ public class SecurityConfig {
                 .and()
                 .csrf().disable()
                 .authorizeHttpRequests()
-                .antMatchers("/oauth/login/**").permitAll()
-                .antMatchers("/user/signup").permitAll()
-                .anyRequest().authenticated()
+                .antMatchers("/auth/**").permitAll()
+                .anyRequest().permitAll() // 테스트용
+//                .anyRequest().authenticated()
                 .and()
                 .addFilterBefore(new JwtAuthenticationFilter(jwtTokenProvider), UsernamePasswordAuthenticationFilter.class);
         return http.build();
