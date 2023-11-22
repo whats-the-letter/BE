@@ -40,7 +40,7 @@ public class AuthController {
     }
 
     @GetMapping("/login/kakao")
-    public RedirectView getAuthorizationCode() throws IOException {
+    public RedirectView getAuthorizationCode() {
         String authorizationUri = kakaoOAuth2Service.getAuthorizationUri();
         return new RedirectView(authorizationUri);
     }
