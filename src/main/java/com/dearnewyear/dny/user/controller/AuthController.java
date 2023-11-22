@@ -1,12 +1,14 @@
 package com.dearnewyear.dny.user.controller;
 
-import com.dearnewyear.dny.common.dto.response.ApiResponse;
-import com.dearnewyear.dny.common.dto.response.ErrorResponse;
 import com.dearnewyear.dny.common.error.exception.CustomException;
+import com.dearnewyear.dny.user.dto.UserInfo;
 import com.dearnewyear.dny.user.dto.request.SignupRequest;
-import com.dearnewyear.dny.user.dto.response.LoginResponse;
+import com.dearnewyear.dny.user.dto.response.AuthResponse;
 import com.dearnewyear.dny.user.service.KakaoOAuth2Service;
 import com.dearnewyear.dny.user.service.UserService;
+import io.swagger.annotations.Api;
+import io.swagger.annotations.ApiOperation;
+import io.swagger.annotations.ApiResponses;
 import javax.servlet.http.HttpServletResponse;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
@@ -18,6 +20,7 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.servlet.view.RedirectView;
 
+@Api(tags = {"Auth"})
 @RestController
 @RequiredArgsConstructor
 @RequestMapping("/auth")
@@ -26,53 +29,62 @@ public class AuthController {
     private final KakaoOAuth2Service kakaoOAuth2Service;
     private final UserService userService;
 
+    @ApiOperation(value = "회원가입")
+    @ApiResponses({
+            @io.swagger.annotations.ApiResponse(code = 200, message = "회원가입 성공"),
+            @io.swagger.annotations.ApiResponse(code = 400, message = "회원가입 실패")
+    })
     @PostMapping("/signup")
-    public ResponseEntity<ApiResponse> signup(@RequestBody SignupRequest request, HttpServletResponse response) {
+    public ResponseEntity<AuthResponse> signup(@RequestBody SignupRequest request, HttpServletResponse response) {
         try {
-            userService.signupAndLoginUser(request, response);
-            ApiResponse res = new ApiResponse(200, "회원가입 성공", null);
-            return ResponseEntity.ok(res);
+            UserInfo userInfo = userService.signupAndLoginUser(request, response);
+            return ResponseEntity.ok(new AuthResponse(userInfo, null));
         } catch (CustomException e) {
-            ErrorResponse res = ErrorResponse.of(e.getErrorCode());
-            return ResponseEntity.status(e.getErrorCode().getStatus()).body(res);
+            return ResponseEntity.status(e.getErrorCode().getStatus()).body(new AuthResponse(null, e.getMessage()));
         }
     }
 
+    @ApiOperation(value = "카카오 로그인 링크로 redirect")
+    @ApiResponses({
+            @io.swagger.annotations.ApiResponse(code = 200, message = "카카오 로그인 링크로 접속 성공")
+    })
     @GetMapping("/login/kakao")
     public RedirectView getAuthorizationCode() {
         String authorizationUri = kakaoOAuth2Service.getAuthorizationUri();
         return new RedirectView(authorizationUri);
     }
 
+    @ApiOperation(value = "카카오 로그인 후 얻은 코드로 DNY 로그인 !")
+    @ApiResponses({
+            @io.swagger.annotations.ApiResponse(code = 200, message = "로그인 성공"),
+            @io.swagger.annotations.ApiResponse(code = 404, message = "회원가입 필요"),
+            @io.swagger.annotations.ApiResponse(code = 400, message = "유효하지 않은 코드")
+    })
     @GetMapping("/login/kakao/code")
-    public ResponseEntity<ApiResponse> kakaoLogin(@RequestParam("code") String code, HttpServletResponse response) {
+    public ResponseEntity<AuthResponse> kakaoLogin(@RequestParam("code") String code, HttpServletResponse response) {
         try {
             response.setHeader("Content-Type", "application/json");
             String accessToken = kakaoOAuth2Service.getAccessToken(code);
-            LoginResponse dto = kakaoOAuth2Service.getKakaoUser(accessToken, response);
 
-            if (dto.getUserName() != null) {
-                ApiResponse res = new ApiResponse(200, "카카오 로그인 성공", dto);
-                return ResponseEntity.ok(res);
-            } else {
-                ApiResponse res = new ApiResponse(401, "회원가입 필요", dto);
-                return ResponseEntity.status(401).body(res);
-            }
+            UserInfo userInfo = kakaoOAuth2Service.getKakaoUser(accessToken, response);
+            return ResponseEntity.ok(new AuthResponse(userInfo, null));
         } catch (CustomException e) {
-            ErrorResponse res = ErrorResponse.of(e.getErrorCode());
-            return ResponseEntity.status(e.getErrorCode().getStatus()).body(res);
+            return ResponseEntity.status(e.getErrorCode().getStatus()).body(new AuthResponse(null, e.getMessage()));
         }
     }
 
+    @ApiOperation(value = "RefreshToken을 통한 AccessToken 갱신")
+    @ApiResponses({
+            @io.swagger.annotations.ApiResponse(code = 200, message = "AccessToken 갱신 성공"),
+            @io.swagger.annotations.ApiResponse(code = 401, message = "AccessToken 갱신 실패")
+    })
     @PostMapping("/renew")
-    public ResponseEntity<ApiResponse> renewToken(@RequestParam("DNY-Refresh") String refreshToken, HttpServletResponse response) {
+    public ResponseEntity<String> renewToken(@RequestParam("DNY-Refresh") String refreshToken, HttpServletResponse response) {
         try {
             userService.renewToken(refreshToken, response);
-            ApiResponse res = new ApiResponse(200, "AccessToken 갱신 성공", null);
-            return ResponseEntity.ok(res);
+            return ResponseEntity.ok("AccessToken 갱신 성공");
         } catch (CustomException e) {
-            ErrorResponse res = ErrorResponse.of(e.getErrorCode());
-            return ResponseEntity.status(e.getErrorCode().getStatus()).body(res);
+            return ResponseEntity.status(e.getErrorCode().getStatus()).body(e.getMessage());
         }
     }
 }
