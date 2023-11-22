@@ -4,6 +4,7 @@ import com.dearnewyear.dny.common.error.ErrorCode;
 import com.dearnewyear.dny.common.error.exception.CustomException;
 import com.dearnewyear.dny.common.jwt.JwtTokenProvider;
 import com.dearnewyear.dny.user.domain.User;
+import com.dearnewyear.dny.user.dto.UserInfo;
 import com.dearnewyear.dny.user.dto.request.SignupRequest;
 import com.dearnewyear.dny.user.repository.UserRepository;
 import java.util.Optional;
@@ -20,7 +21,7 @@ public class UserService {
     private final JwtTokenProvider jwtTokenProvider;
     private final UserRepository userRepository;
 
-    public void signupAndLoginUser(SignupRequest request, HttpServletResponse response) {
+    public UserInfo signupAndLoginUser(SignupRequest request, HttpServletResponse response) {
         if (userRepository.findByEmail(request.getEmail()).isPresent())
             throw new CustomException(ErrorCode.USER_ALREADY_EXIST);
 
@@ -32,9 +33,16 @@ public class UserService {
 
         response.setHeader("Authorization", "Bearer " + accessToken);
         response.setHeader("DNY-Refresh", refreshToken);
+
+        return UserInfo.builder()
+            .userName(user.getUserName())
+            .email(user.getEmail())
+            .mainBackground(String.valueOf(user.getMainBackground()))
+            .mainLp(String.valueOf(user.getMainLp()))
+            .build();
     }
 
-    public String chkAndLoginUser(String email, HttpServletResponse response) {
+    public UserInfo chkAndLoginUser(String email, HttpServletResponse response) {
         Optional<User> user = userRepository.findByEmail(email);
         if (user.isPresent()) {
             String accessToken = jwtTokenProvider.createAccessToken(user.get());
@@ -42,9 +50,14 @@ public class UserService {
 
             response.setHeader("Authorization", "Bearer " + accessToken);
             response.setHeader("DNY-Refresh", refreshToken);
-            return "success";
+            return UserInfo.builder()
+                .userName(user.get().getUserName())
+                .email(user.get().getEmail())
+                .mainBackground(String.valueOf(user.get().getMainBackground()))
+                .mainLp(String.valueOf(user.get().getMainLp()))
+                .build();
         } else {
-            return email;
+            throw new CustomException(ErrorCode.USER_NOT_FOUND);
         }
     }
 
