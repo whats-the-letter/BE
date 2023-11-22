@@ -2,9 +2,7 @@ package com.dearnewyear.dny.common.jwt;
 
 import com.dearnewyear.dny.common.error.ErrorCode;
 import com.dearnewyear.dny.common.error.exception.CustomException;
-import com.dearnewyear.dny.user.domain.RefreshToken;
 import com.dearnewyear.dny.user.domain.User;
-import com.dearnewyear.dny.user.repository.RefreshTokenRepository;
 import com.dearnewyear.dny.user.repository.UserRepository;
 import com.dearnewyear.dny.user.dto.CustomUserDetails;
 import io.jsonwebtoken.Claims;
@@ -38,7 +36,6 @@ public class JwtTokenProvider {
     private long refreshTokenExpireMs;
 
     private final UserRepository userRepository;
-    private final RefreshTokenRepository refreshTokenRepository;
 
     private Key getSignKey(String secretKey) {
         return Keys.hmacShaKeyFor(secretKey.getBytes(StandardCharsets.UTF_8));
@@ -70,12 +67,7 @@ public class JwtTokenProvider {
     }
 
     public String createRefreshToken(User user) {
-        String refreshToken = createToken(user, refreshTokenExpireMs);
-
-        RefreshToken rt = new RefreshToken(user, refreshToken);
-        refreshTokenRepository.save(rt);
-
-        return refreshToken;
+        return createToken(user, refreshTokenExpireMs);
     }
 
     public String getAccessToken(HttpServletRequest request) {
