@@ -48,17 +48,8 @@ public class UserService {
         }
     }
 
-    public void signupAndLoginUser(SignupRequest request, HttpServletResponse response) {
-        if (userRepository.findByEmail(request.getEmail()).isPresent())
-            throw new CustomException(ErrorCode.USER_ALREADY_EXIST);
-
-        User user = new User(request);
-        userRepository.save(user);
-
-        String accessToken = jwtTokenProvider.createAccessToken(user);
-        String refreshToken = jwtTokenProvider.createRefreshToken(user);
-
-        response.setHeader("Authorization", accessToken);
-        response.setHeader("RefreshToken", refreshToken);
+    public void renewToken(String refreshToken, HttpServletResponse response) {
+        String newAccessToken = jwtTokenProvider.renewAccessToken(refreshToken);
+        response.setHeader("Authorization", "Bearer " + newAccessToken);
     }
 }

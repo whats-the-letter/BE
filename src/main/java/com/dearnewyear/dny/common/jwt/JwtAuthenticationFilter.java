@@ -1,5 +1,6 @@
 package com.dearnewyear.dny.common.jwt;
 
+import com.dearnewyear.dny.common.error.exception.CustomException;
 import java.io.IOException;
 import javax.servlet.FilterChain;
 import javax.servlet.ServletException;
@@ -22,16 +23,13 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
             FilterChain filterChain) throws ServletException, IOException {
         String accessToken = jwtTokenProvider.getAccessToken(request);
 
-        log.info("accessToken: " + accessToken);
-        log.info("refreshToken: " + refreshToken);
-
-        if (accessToken != null && jwtTokenProvider.validateToken(accessToken)) {
-            log.info("액세스 토큰 유효");
-            setAuthentication(accessToken);
-        }
-        if (refreshToken != null && jwtTokenProvider.validateToken(refreshToken)) {
-            log.info("리프레시 토큰 유효");
-            setAuthentication(refreshToken);
+        try {
+            if (accessToken != null && jwtTokenProvider.validateToken(accessToken))
+                setAuthentication(accessToken);
+        } catch (CustomException e) {
+            response.setStatus(e.getErrorCode().getStatus());
+            response.getWriter().write(e.getMessage());
+            return;
         }
         filterChain.doFilter(request, response);
     }

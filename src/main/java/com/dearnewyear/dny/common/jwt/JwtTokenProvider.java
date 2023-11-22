@@ -12,6 +12,7 @@ import io.jsonwebtoken.security.Keys;
 import java.nio.charset.StandardCharsets;
 import java.security.Key;
 import java.util.Date;
+import java.util.Optional;
 import javax.servlet.http.HttpServletRequest;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -42,7 +43,6 @@ public class JwtTokenProvider {
     }
 
     private String createToken(User user, long ms) {
-        log.info("토큰 생성 시작");
         Claims claims = Jwts.claims();
         Date now = new Date();
         Key key = getSignKey(secretKey);
@@ -68,6 +68,27 @@ public class JwtTokenProvider {
 
     public String createRefreshToken(User user) {
         return createToken(user, refreshTokenExpireMs);
+    }
+
+    public String renewAccessToken(String refreshToken) {
+        Claims claims = Jwts.parserBuilder()
+                .setSigningKey(getSignKey(secretKey))
+                .build()
+                .parseClaimsJws(refreshToken)
+                .getBody();
+
+        Long userId = claims.get("userId", Long.class);
+        String userName = claims.get("userName", String.class);
+        String email = claims.get("email", String.class);
+
+        Optional<User> user = userRepository.findById(userId);
+        if (user.isPresent()
+                && userName.equals(user.get().getUserName())
+                && email.equals(user.get().getEmail())) {
+            return createAccessToken(user.get());
+        } else {
+            throw new CustomException(ErrorCode.INVALID_TOKEN);
+        }
     }
 
     public String getAccessToken(HttpServletRequest request) {

@@ -63,4 +63,16 @@ public class AuthController {
             return ResponseEntity.status(e.getErrorCode().getStatus()).body(res);
         }
     }
+
+    @PostMapping("/renew")
+    public ResponseEntity<ApiResponse> renewToken(@RequestParam("DNY-Refresh") String refreshToken, HttpServletResponse response) {
+        try {
+            userService.renewToken(refreshToken, response);
+            ApiResponse res = new ApiResponse(200, "AccessToken 갱신 성공", null);
+            return ResponseEntity.ok(res);
+        } catch (CustomException e) {
+            ErrorResponse res = ErrorResponse.of(e.getErrorCode());
+            return ResponseEntity.status(e.getErrorCode().getStatus()).body(res);
+        }
+    }
 }
