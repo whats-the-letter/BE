@@ -4,6 +4,7 @@ import com.dearnewyear.dny.common.dto.response.ApiResponse;
 import com.dearnewyear.dny.common.dto.response.ErrorResponse;
 import com.dearnewyear.dny.common.error.exception.CustomException;
 import com.dearnewyear.dny.user.dto.request.SignupRequest;
+import com.dearnewyear.dny.user.dto.response.LoginResponse;
 import com.dearnewyear.dny.user.service.KakaoOAuth2Service;
 import com.dearnewyear.dny.user.service.UserService;
 import java.io.IOException;
@@ -49,13 +50,13 @@ public class AuthController {
         try {
             response.setHeader("Content-Type", "application/json");
             String accessToken = kakaoOAuth2Service.getAccessToken(code);
-            String email = kakaoOAuth2Service.getKakaoUser(accessToken, response);
+            LoginResponse dto = kakaoOAuth2Service.getKakaoUser(accessToken, response);
 
-            if (email.equals("success")) {
-                ApiResponse res = new ApiResponse(200, "카카오 로그인 성공", null);
+            if (dto.getUserName() != null) {
+                ApiResponse res = new ApiResponse(200, "카카오 로그인 성공", dto);
                 return ResponseEntity.ok(res);
             } else {
-                ApiResponse res = new ApiResponse(401, "회원가입 필요", email);
+                ApiResponse res = new ApiResponse(401, "회원가입 필요", dto);
                 return ResponseEntity.status(401).body(res);
             }
         } catch (CustomException e) {

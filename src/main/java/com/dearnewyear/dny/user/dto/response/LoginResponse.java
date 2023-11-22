@@ -1,11 +1,13 @@
-package com.dearnewyear.dny.user.dto.request;
+package com.dearnewyear.dny.user.dto.response;
 
 import lombok.AllArgsConstructor;
+import lombok.Builder;
 import lombok.Getter;
 
 @Getter
+@Builder
 @AllArgsConstructor
-public class SignupRequest {
+public class LoginResponse {
 
     private final String userName;
     private final String email;
