@@ -7,7 +7,6 @@ import com.dearnewyear.dny.user.dto.request.SignupRequest;
 import com.dearnewyear.dny.user.dto.response.LoginResponse;
 import com.dearnewyear.dny.user.service.KakaoOAuth2Service;
 import com.dearnewyear.dny.user.service.UserService;
-import java.io.IOException;
 import javax.servlet.http.HttpServletResponse;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
