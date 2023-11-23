@@ -1,8 +1,11 @@
 package com.dearnewyear.dny.user.domain;
 
+import com.dearnewyear.dny.album.domain.Album;
 import com.dearnewyear.dny.user.domain.constant.MainBackground;
 import com.dearnewyear.dny.user.domain.constant.MainLp;
 import com.dearnewyear.dny.user.dto.request.SignupRequest;
+import java.util.ArrayList;
+import java.util.List;
 import javax.persistence.*;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -19,17 +22,25 @@ public class User {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long userId;
 
-    @Column(name = "user_name", nullable = false)
+    @Column(name = "user_name", nullable = false, length = 6)
     private String userName;
 
-    @Column(name = "email", nullable = false, unique = true)
+    @Column(name = "email", nullable = false, unique = true, length = 30)
     private String email;
 
     @Column(name = "main_background", nullable = false)
+    @Enumerated(EnumType.STRING)
     private MainBackground mainBackground;
 
     @Column(name = "main_lp", nullable = false)
+    @Enumerated(EnumType.STRING)
     private MainLp mainLp;
+
+    @OneToMany(mappedBy = "from", cascade = CascadeType.ALL)
+    private List<Album> sentAlbums = new ArrayList<>();
+
+    @OneToMany(mappedBy = "to", cascade = CascadeType.ALL)
+    private List<Album> receivedAlbums = new ArrayList<>();
 
     public User(SignupRequest request) {
         this.userName = request.getUserName();
