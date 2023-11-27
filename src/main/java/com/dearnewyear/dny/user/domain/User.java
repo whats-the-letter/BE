@@ -36,10 +36,10 @@ public class User {
     @Enumerated(EnumType.STRING)
     private MainLp mainLp;
 
-    @OneToMany(mappedBy = "from", cascade = CascadeType.ALL)
+    @OneToMany(mappedBy = "fromUser", cascade = CascadeType.ALL)
     private List<Album> sentAlbums = new ArrayList<>();
 
-    @OneToMany(mappedBy = "to", cascade = CascadeType.ALL)
+    @OneToMany(mappedBy = "toUser", cascade = CascadeType.ALL)
     private List<Album> receivedAlbums = new ArrayList<>();
 
     public User(SignupRequest request) {

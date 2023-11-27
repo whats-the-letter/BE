@@ -17,6 +17,15 @@ public class Music {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long musicId;
 
+    @Column(name = "music_name", nullable = false)
+    private String musicName;
+
+    @Column(name = "music_artist", nullable = false)
+    private String musicArtist;
+
+    @Column(name = "youtube_url_id", nullable = false)
+    private String youtubeUrlId;
+
     @OneToMany(mappedBy = "music", cascade = CascadeType.ALL)
     private List<Album> albums = new ArrayList<>();
 }

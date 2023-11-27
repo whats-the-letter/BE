@@ -41,11 +41,11 @@ public class Album {
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "from_user_id", nullable = false)
-    private User from;
+    private User fromUser;
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "to_user_id")
-    private User to;
+    private User toUser;
 
     @Column(name = "from_name", nullable = false, length = 10)
     private String fromName;
@@ -54,8 +54,13 @@ public class Album {
     private String toName;
 
     @Column(name = "is_received", nullable = false)
-    private Boolean isReceived;
+    private Boolean isReceived = false;
 
     @Column(name = "letter", nullable = false, length = 400)
     private String letter;
+
+    public void updateTo(User toUser) {
+        this.toUser = toUser;
+        this.isReceived = true;
+    }
 }
