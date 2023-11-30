@@ -12,6 +12,9 @@ import lombok.Getter;
 @ApiModel(value = "유저 정보 모델")
 public class UserInfo {
 
+    @ApiModelProperty(value = "유저 ID")
+    private final Long userId;
+
     @ApiModelProperty(value = "유저 닉네임")
     private final String userName;
 
