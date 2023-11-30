@@ -2,6 +2,7 @@ package com.dearnewyear.dny.user.service;
 
 import com.dearnewyear.dny.common.error.ErrorCode;
 import com.dearnewyear.dny.common.error.exception.CustomException;
+import com.dearnewyear.dny.user.dto.UserInfo;
 import java.util.Map;
 import javax.servlet.http.HttpServletResponse;
 import lombok.RequiredArgsConstructor;
@@ -63,9 +64,8 @@ public class KakaoOAuth2Service {
         }
     }
 
-    public String getKakaoUser(String token, HttpServletResponse response) {
+    public UserInfo getKakaoUser(String token, HttpServletResponse response) {
         RestTemplate restTemplate = new RestTemplate();
-
         HttpHeaders headers = new HttpHeaders();
         headers.add("Authorization", "Bearer " + token);
         headers.add("Content-type", "application/x-www-form-urlencoded;charset=utf-8");
