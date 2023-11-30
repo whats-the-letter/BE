@@ -59,7 +59,9 @@ public class UserService {
                     .mainLp(String.valueOf(user.get().getMainLp()))
                     .build();
         } else {
-            throw new CustomException(ErrorCode.USER_NOT_FOUND);
+            return UserInfo.builder()
+                    .email(email)
+                    .build();
         }
     }
 
