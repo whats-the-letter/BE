@@ -29,12 +29,12 @@ public class AuthController {
     private final KakaoOAuth2Service kakaoOAuth2Service;
     private final UserService userService;
 
-    @PostMapping("/signup")
     @ApiOperation(value = "회원가입")
     @ApiResponses({
             @io.swagger.annotations.ApiResponse(code = 200, message = "회원가입 성공"),
             @io.swagger.annotations.ApiResponse(code = 400, message = "회원가입 실패")
     })
+    @PostMapping("/signup")
     public ResponseEntity<AuthResponse> signup(@RequestBody SignupRequest request, HttpServletResponse response) {
         try {
             UserInfo userInfo = userService.signupAndLoginUser(request, response);
@@ -65,6 +65,7 @@ public class AuthController {
         try {
             response.setHeader("Content-Type", "application/json");
             String accessToken = kakaoOAuth2Service.getAccessToken(code);
+          
             UserInfo userInfo = kakaoOAuth2Service.getKakaoUser(accessToken, response);
             if (userInfo.getUserName() == null)
                 return ResponseEntity.status(404).body(new AuthResponse(userInfo, "회원가입 필요"));
