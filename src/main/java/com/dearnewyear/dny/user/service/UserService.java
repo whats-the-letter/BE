@@ -35,11 +35,11 @@ public class UserService {
         response.setHeader("DNY-Refresh", refreshToken);
 
         return UserInfo.builder()
-            .userName(user.getUserName())
-            .email(user.getEmail())
-            .mainBackground(String.valueOf(user.getMainBackground()))
-            .mainLp(String.valueOf(user.getMainLp()))
-            .build();
+                .userName(user.getUserName())
+                .email(user.getEmail())
+                .mainBackground(String.valueOf(user.getMainBackground()))
+                .mainLp(String.valueOf(user.getMainLp()))
+                .build();
     }
 
     public UserInfo chkAndLoginUser(String email, HttpServletResponse response) {
@@ -51,13 +51,15 @@ public class UserService {
             response.setHeader("Authorization", "Bearer " + accessToken);
             response.setHeader("DNY-Refresh", refreshToken);
             return UserInfo.builder()
-                .userName(user.get().getUserName())
-                .email(user.get().getEmail())
-                .mainBackground(String.valueOf(user.get().getMainBackground()))
-                .mainLp(String.valueOf(user.get().getMainLp()))
-                .build();
+                    .userName(user.get().getUserName())
+                    .email(user.get().getEmail())
+                    .mainBackground(String.valueOf(user.get().getMainBackground()))
+                    .mainLp(String.valueOf(user.get().getMainLp()))
+                    .build();
         } else {
-            throw new CustomException(ErrorCode.USER_NOT_FOUND);
+            return UserInfo.builder()
+                    .email(email)
+                    .build();
         }
     }
 

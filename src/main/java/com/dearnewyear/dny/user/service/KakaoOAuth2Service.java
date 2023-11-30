@@ -66,7 +66,6 @@ public class KakaoOAuth2Service {
 
     public UserInfo getKakaoUser(String token, HttpServletResponse response) {
         RestTemplate restTemplate = new RestTemplate();
-
         HttpHeaders headers = new HttpHeaders();
         headers.add("Authorization", "Bearer " + token);
         headers.add("Content-type", "application/x-www-form-urlencoded;charset=utf-8");
