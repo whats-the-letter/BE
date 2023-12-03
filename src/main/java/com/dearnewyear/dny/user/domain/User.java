@@ -4,11 +4,13 @@ import com.dearnewyear.dny.album.domain.Album;
 import com.dearnewyear.dny.user.domain.constant.MainBackground;
 import com.dearnewyear.dny.user.domain.constant.MainLp;
 import com.dearnewyear.dny.user.dto.request.SignupRequest;
+import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
 import javax.persistence.*;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
+import org.hibernate.annotations.CreationTimestamp;
 import org.springframework.stereotype.Component;
 
 @Entity
@@ -35,6 +37,10 @@ public class User {
     @Column(name = "main_lp", nullable = false)
     @Enumerated(EnumType.STRING)
     private MainLp mainLp;
+
+    @Column(name = "created_at", nullable = false, updatable = false)
+    @CreationTimestamp
+    private LocalDateTime createdAt;
 
     @OneToMany(mappedBy = "fromUser", cascade = CascadeType.ALL)
     private List<Album> sentAlbums = new ArrayList<>();

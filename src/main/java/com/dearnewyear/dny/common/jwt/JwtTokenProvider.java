@@ -92,11 +92,16 @@ public class JwtTokenProvider {
     }
 
     public String getAccessToken(HttpServletRequest request) {
-        return request.getHeader("Access-Token");
+        String accessToken = request.getHeader("Authorization");
+        if (accessToken == null) {
+            return null;
+        } else {
+            return accessToken.substring(7);
+        }
     }
 
     public String getRefreshToken(HttpServletRequest request) {
-        return request.getHeader("Refresh-Token");
+        return request.getHeader("DNY-Refresh");
     }
 
     public boolean validateToken(String token) {
