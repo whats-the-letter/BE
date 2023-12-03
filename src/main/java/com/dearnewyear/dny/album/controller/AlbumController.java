@@ -48,9 +48,9 @@ public class AlbumController {
             @io.swagger.annotations.ApiResponse(code = 404, message = "앨범 조회 실패")
     })
     @GetMapping("/view/{albumId}")
-    public ResponseEntity<AlbumResponse> viewAlbum(@PathVariable Long albumId) {
+    public ResponseEntity<AlbumResponse> viewAlbum(@PathVariable Long albumId, HttpServletRequest request) {
         try {
-            AlbumInfo albumInfo = albumService.viewAlbum(albumId);
+            AlbumInfo albumInfo = albumService.viewAlbum(albumId, request);
             return ResponseEntity.ok(new AlbumResponse(albumInfo, null));
         } catch (CustomException e) {
             return ResponseEntity.status(e.getErrorCode().getStatus()).body(new AlbumResponse(null, e.getMessage()));
