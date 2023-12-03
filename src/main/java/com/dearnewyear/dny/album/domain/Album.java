@@ -5,11 +5,13 @@ import com.dearnewyear.dny.album.domain.constant.AlbumCover;
 import com.dearnewyear.dny.album.domain.constant.AlbumPhrases;
 import com.dearnewyear.dny.music.domain.Music;
 import com.dearnewyear.dny.user.domain.User;
+import java.time.LocalDateTime;
 import javax.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
+import org.hibernate.annotations.CreationTimestamp;
 
 @Entity
 @Table(name = "ALBUM")
@@ -53,14 +55,14 @@ public class Album {
     @Column(name = "to_name", nullable = false, length = 10)
     private String toName;
 
-    @Column(name = "is_received", nullable = false)
-    private Boolean isReceived = false;
-
     @Column(name = "letter", nullable = false, length = 400)
     private String letter;
 
+    @Column(name = "created_at", nullable = false, updatable = false)
+    @CreationTimestamp
+    private LocalDateTime createdAt;
+
     public void updateTo(User toUser) {
         this.toUser = toUser;
-        this.isReceived = true;
     }
 }
