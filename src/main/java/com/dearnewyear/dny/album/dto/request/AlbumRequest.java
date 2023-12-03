@@ -22,9 +22,6 @@ public class AlbumRequest {
     @ApiModelProperty(value = "음악 ID", required = true)
     private Long musicId;
 
-    @ApiModelProperty(value = "보내는 사람 ID", required = true)
-    private Long fromUserId;
-
     @ApiModelProperty(value = "받는 사람 ID")
     private Long toUserId;
 
