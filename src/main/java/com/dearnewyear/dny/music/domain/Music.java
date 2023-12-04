@@ -37,4 +37,12 @@ public class Music {
 
     @OneToMany(mappedBy = "music", cascade = CascadeType.ALL)
     private List<Album> albums = new ArrayList<>();
+
+    public Music(AddMusicRequest addMusicRequest, String thumbnailUrl) {
+        this.musicName = addMusicRequest.getMusicName();
+        this.musicArtist = addMusicRequest.getMusicArtist();
+        this.youtubeUrlId = addMusicRequest.getYoutubeUrlId();
+        this.thumbnail = thumbnailUrl;
+        this.category = Category.valueOf(addMusicRequest.getCategory());
+    }
 }
