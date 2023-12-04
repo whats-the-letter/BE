@@ -27,8 +27,8 @@ public class SecurityConfig {
                 .csrf().disable()
                 .authorizeHttpRequests()
                 .antMatchers("/auth/**").permitAll()
-                .anyRequest().permitAll() // 테스트용
-//                .anyRequest().authenticated()
+                .antMatchers("/music/**").permitAll() // Music API 테스트용
+                .anyRequest().authenticated()
                 .and()
                 .addFilterBefore(new JwtAuthenticationFilter(jwtTokenProvider), UsernamePasswordAuthenticationFilter.class);
         return http.build();
