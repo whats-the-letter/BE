@@ -30,9 +30,6 @@ public class KakaoOAuth2Service {
     @Value("${spring.security.oauth2.client.registration.kakao.redirect-uri}")
     private String kakaoRedirectUri;
 
-    @Value("${spring.security.oauth2.client.provider.kakao.authorization-uri}")
-    private String kakaoAuthorizationUri;
-
     @Value("${spring.security.oauth2.client.provider.kakao.token-uri}")
     private String kakaoTokenUri;
 
@@ -78,9 +75,5 @@ public class KakaoOAuth2Service {
         } else {
             throw new CustomException(ErrorCode.KAKAO_OAUTH2_ERROR);
         }
-    }
-
-    public String getAuthorizationUri() {
-        return kakaoAuthorizationUri + "?client_id=" + kakaoClientId + "&redirect_uri=" + kakaoRedirectUri + "&response_type=code";
     }
 }
