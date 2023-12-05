@@ -8,6 +8,7 @@ import com.dearnewyear.dny.music.dto.request.AddMusicRequest;
 import com.dearnewyear.dny.music.dto.response.MusicListResponse;
 import com.dearnewyear.dny.music.repository.MusicRepository;
 import java.util.List;
+import java.util.stream.Collectors;
 import javax.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
@@ -24,7 +25,7 @@ public class MusicService {
         List<MusicInfo> musicList = musicRepository.findAll()
                 .stream()
                 .map(MusicInfo::new)
-                .toList();
+                .collect(Collectors.toList());
         return new MusicListResponse(musicList, null);
     }
 
