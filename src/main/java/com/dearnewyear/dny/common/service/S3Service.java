@@ -23,7 +23,7 @@ public class S3Service {
 
     private final S3Client s3Client;
 
-    public String upload(MultipartFile file) throws IOException {
+    public String upload(MultipartFile file) {
         if (file.isEmpty())
             return null;
         try {
