@@ -13,6 +13,7 @@ import javax.servlet.http.HttpServletResponse;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -35,7 +36,7 @@ public class AuthController {
             @io.swagger.annotations.ApiResponse(code = 400, message = "회원가입 실패")
     })
     @PostMapping("/signup")
-    public ResponseEntity<AuthResponse> signup(@RequestBody SignupRequest request, HttpServletResponse response) {
+    public ResponseEntity<AuthResponse> signup(@ModelAttribute SignupRequest request, HttpServletResponse response) {
         try {
             UserInfo userInfo = userService.signupAndLoginUser(request, response);
             return ResponseEntity.ok(new AuthResponse(userInfo, null));
