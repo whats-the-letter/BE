@@ -28,7 +28,7 @@ public class SecurityConfig {
                 .authorizeHttpRequests()
                 .antMatchers("/auth/**").permitAll()
                 .antMatchers("/music/**").permitAll() // Music API 테스트용
-                .antMatchers("/swagger-ui/**").permitAll()
+                .antMatchers("/v2/api-docs", "/swagger-resources/**", "/swagger-ui/**", "/webjars/**", "/swagger/**").permitAll()
                 .anyRequest().authenticated()
                 .and()
                 .addFilterBefore(new JwtAuthenticationFilter(jwtTokenProvider), UsernamePasswordAuthenticationFilter.class);
