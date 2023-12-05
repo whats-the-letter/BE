@@ -1,6 +1,8 @@
 package com.dearnewyear.dny.music.domain;
 
 import com.dearnewyear.dny.album.domain.Album;
+import com.dearnewyear.dny.music.domain.constant.Category;
+import com.dearnewyear.dny.music.dto.request.AddMusicRequest;
 import java.util.ArrayList;
 import java.util.List;
 import javax.persistence.*;
@@ -26,6 +28,21 @@ public class Music {
     @Column(name = "youtube_url_id", nullable = false)
     private String youtubeUrlId;
 
+    @Column(name = "thumbnail", nullable = false)
+    private String thumbnail;
+
+    @Column(name = "category", nullable = false)
+    @Enumerated(EnumType.STRING)
+    private Category category;
+
     @OneToMany(mappedBy = "music", cascade = CascadeType.ALL)
     private List<Album> albums = new ArrayList<>();
+
+    public Music(AddMusicRequest addMusicRequest, String thumbnailUrl) {
+        this.musicName = addMusicRequest.getMusicName();
+        this.musicArtist = addMusicRequest.getMusicArtist();
+        this.youtubeUrlId = addMusicRequest.getYoutubeUrlId();
+        this.thumbnail = thumbnailUrl;
+        this.category = Category.valueOf(addMusicRequest.getCategory());
+    }
 }
