@@ -51,5 +51,5 @@ jobs:
           script: |
             sudo docker rm -f dny-be-container
             sudo docker pull ${{ secrets.DOCKERHUB_USERNAME }}/dny-be:${{ env.TIME }}
-            sudo docker run -d --name dny-be-container -p 8080:8080 ${{ secrets.DOCKERHUB_USERNAME }}/dny-be:${{ env.TIME }}
+            sudo docker run -d --name dny-be-container -p 80:8080 ${{ secrets.DOCKERHUB_USERNAME }}/dny-be:${{ env.TIME }}
             sudo docker image prune -f
