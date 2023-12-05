@@ -32,7 +32,7 @@ jobs:
         run: mkdir -p ./src/main/resources
 
       - name: Create application.yml
-        run: echo ${{ secrets.APPLICATION_YML }} > ./src/main/resources/application.yml
+        run: echo ${{ secrets.APPLICATION_YML }} >> ./src/main/resources/application.yml
 
       - name: Set up ENV
         run: echo "TIME=$(date "+%Y-%m-%d-%H-%M")" >> $GITHUB_ENV
