@@ -13,12 +13,11 @@ import javax.servlet.http.HttpServletResponse;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
-import org.springframework.web.servlet.view.RedirectView;
 
 @Api(tags = {"Auth"})
 @RestController
@@ -35,7 +34,7 @@ public class AuthController {
             @io.swagger.annotations.ApiResponse(code = 400, message = "회원가입 실패")
     })
     @PostMapping("/signup")
-    public ResponseEntity<AuthResponse> signup(@RequestBody SignupRequest request, HttpServletResponse response) {
+    public ResponseEntity<AuthResponse> signup(@ModelAttribute SignupRequest request, HttpServletResponse response) {
         try {
             UserInfo userInfo = userService.signupAndLoginUser(request, response);
             return ResponseEntity.ok(new AuthResponse(userInfo, null));
@@ -44,17 +43,7 @@ public class AuthController {
         }
     }
 
-    @ApiOperation(value = "카카오 로그인 링크로 redirect")
-    @ApiResponses({
-            @io.swagger.annotations.ApiResponse(code = 200, message = "카카오 로그인 링크로 접속 성공")
-    })
-    @GetMapping("/login/kakao")
-    public RedirectView getAuthorizationCode() {
-        String authorizationUri = kakaoOAuth2Service.getAuthorizationUri();
-        return new RedirectView(authorizationUri);
-    }
-
-    @ApiOperation(value = "카카오 로그인 후 얻은 코드로 DNY 로그인 !")
+    @ApiOperation(value = "카카오 로그인 후 발급받은 code로 DNY 로그인")
     @ApiResponses({
             @io.swagger.annotations.ApiResponse(code = 200, message = "로그인 성공"),
             @io.swagger.annotations.ApiResponse(code = 404, message = "회원가입 필요"),

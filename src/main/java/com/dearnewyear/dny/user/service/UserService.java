@@ -22,6 +22,11 @@ public class UserService {
     private final UserRepository userRepository;
 
     public UserInfo signupAndLoginUser(SignupRequest request, HttpServletResponse response) {
+        if (request.getEmail() == null || request.getEmail().isEmpty()
+                || request.getUserName() == null || request.getUserName().isEmpty()
+                || request.getMainBackground() == null || request.getMainBackground().isEmpty()
+                || request.getMainLp() == null || request.getMainLp().isEmpty())
+            throw new CustomException(ErrorCode.INVALID_INPUT_VALUE);
         if (userRepository.findByEmail(request.getEmail()).isPresent())
             throw new CustomException(ErrorCode.USER_ALREADY_EXIST);
 
