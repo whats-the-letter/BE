@@ -15,6 +15,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestHeader;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
@@ -70,7 +71,7 @@ public class AuthController {
             @io.swagger.annotations.ApiResponse(code = 401, message = "AccessToken 갱신 실패")
     })
     @PostMapping("/renew")
-    public ResponseEntity<String> renewToken(@RequestParam("DNY-Refresh") String refreshToken, HttpServletResponse response) {
+    public ResponseEntity<String> renewToken(@RequestHeader("DNY-Refresh") String refreshToken, HttpServletResponse response) {
         try {
             userService.renewToken(refreshToken, response);
             return ResponseEntity.ok("AccessToken 갱신 성공");
