@@ -25,9 +25,6 @@ public class MusicInfo {
     @ApiModelProperty(value = "유튜브 URL ID")
     private final String youtubeUrlId;
 
-    @ApiModelProperty(value = "썸네일")
-    private final String thumbnail;
-
     @ApiModelProperty(value = "카테고리")
     private final String category;
 
@@ -36,7 +33,6 @@ public class MusicInfo {
         this.musicName = music.getMusicName();
         this.musicArtist = music.getMusicArtist();
         this.youtubeUrlId = music.getYoutubeUrlId();
-        this.thumbnail = music.getThumbnail();
         this.category = String.valueOf(music.getCategory());
     }
 }

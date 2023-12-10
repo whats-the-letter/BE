@@ -1,11 +1,9 @@
 package com.dearnewyear.dny.music.dto.request;
 
-import com.dearnewyear.dny.music.domain.constant.Category;
 import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
-import org.springframework.web.multipart.MultipartFile;
 
 @Getter
 @AllArgsConstructor
@@ -20,9 +18,6 @@ public class AddMusicRequest {
 
     @ApiModelProperty(value = "youtube url id", required = true)
     private final String youtubeUrlId;
-
-    @ApiModelProperty(value = "썸네일", required = true)
-    private final MultipartFile thumbnail;
 
     @ApiModelProperty(value = "카테고리", required = true)
     private final String category;
