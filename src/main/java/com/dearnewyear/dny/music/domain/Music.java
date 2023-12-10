@@ -28,9 +28,6 @@ public class Music {
     @Column(name = "youtube_url_id", nullable = false)
     private String youtubeUrlId;
 
-    @Column(name = "thumbnail", nullable = false)
-    private String thumbnail;
-
     @Column(name = "category", nullable = false)
     @Enumerated(EnumType.STRING)
     private Category category;
@@ -38,11 +35,10 @@ public class Music {
     @OneToMany(mappedBy = "music", cascade = CascadeType.ALL)
     private List<Album> albums = new ArrayList<>();
 
-    public Music(AddMusicRequest addMusicRequest, String thumbnailUrl) {
+    public Music(AddMusicRequest addMusicRequest) {
         this.musicName = addMusicRequest.getMusicName();
         this.musicArtist = addMusicRequest.getMusicArtist();
         this.youtubeUrlId = addMusicRequest.getYoutubeUrlId();
-        this.thumbnail = thumbnailUrl;
         this.category = Category.valueOf(addMusicRequest.getCategory());
     }
 }

@@ -1,7 +1,5 @@
 package com.dearnewyear.dny.music.service;
 
-import com.dearnewyear.dny.common.error.exception.CustomException;
-import com.dearnewyear.dny.common.service.S3Service;
 import com.dearnewyear.dny.music.domain.Music;
 import com.dearnewyear.dny.music.dto.MusicInfo;
 import com.dearnewyear.dny.music.dto.request.AddMusicRequest;
@@ -19,7 +17,6 @@ import org.springframework.stereotype.Service;
 public class MusicService {
 
     private final MusicRepository musicRepository;
-    private final S3Service s3Service;
 
     public MusicListResponse getMusicList() {
         List<MusicInfo> musicList = musicRepository.findAll()
@@ -30,13 +27,7 @@ public class MusicService {
     }
 
     public void addMusic(AddMusicRequest addMusicRequest) {
-        String thumbnailUrl = null;
-        try {
-            thumbnailUrl = s3Service.upload(addMusicRequest.getThumbnail());
-            Music music = new Music(addMusicRequest, thumbnailUrl);
-            musicRepository.save(music);
-        } catch (CustomException e) {
-            throw new CustomException(e.getErrorCode());
-        }
+        Music music = new Music(addMusicRequest);
+        musicRepository.save(music);
     }
 }
