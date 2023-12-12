@@ -5,6 +5,7 @@ import com.dearnewyear.dny.common.error.exception.CustomException;
 import com.dearnewyear.dny.common.jwt.JwtTokenProvider;
 import com.dearnewyear.dny.user.domain.User;
 import com.dearnewyear.dny.user.dto.UserInfo;
+import com.dearnewyear.dny.user.dto.request.LoginRequest;
 import com.dearnewyear.dny.user.dto.request.SignupRequest;
 import com.dearnewyear.dny.user.repository.UserRepository;
 import java.util.Optional;
@@ -48,7 +49,8 @@ public class UserService {
                 .build();
     }
 
-    public UserInfo chkAndLoginUser(String email, HttpServletResponse response) {
+    public UserInfo loginUser(LoginRequest request, HttpServletResponse response) {
+        String email = request.getEmail();
         Optional<User> user = userRepository.findByEmail(email);
         if (user.isPresent()) {
             String accessToken = jwtTokenProvider.createAccessToken(user.get());
@@ -64,9 +66,7 @@ public class UserService {
                     .mainLp(String.valueOf(user.get().getMainLp()))
                     .build();
         } else {
-            return UserInfo.builder()
-                    .email(email)
-                    .build();
+            throw new CustomException(ErrorCode.USER_NOT_FOUND);
         }
     }
 
