@@ -11,26 +11,26 @@ import lombok.Getter;
 public class AlbumRequest {
 
     @ApiModelProperty(value = "앨범 커버", required = true)
-    private String albumCover;
+    private final String albumCover;
 
     @ApiModelProperty(value = "앨범 문구", required = true)
-    private String albumPhrases;
+    private final String albumPhrases;
 
     @ApiModelProperty(value = "앨범 배경", required = true)
-    private String albumBackground;
+    private final String albumBackground;
 
     @ApiModelProperty(value = "음악 ID", required = true)
-    private Long musicId;
+    private final Long musicId;
 
     @ApiModelProperty(value = "받는 사람 ID")
-    private Long toUserId;
+    private final Long toUserId;
 
     @ApiModelProperty(value = "보내는 사람 이름", required = true)
-    private String fromName;
+    private final String fromName;
 
     @ApiModelProperty(value = "받는 사람 이름", required = true)
-    private String toName;
+    private final String toName;
 
     @ApiModelProperty(value = "편지 내용", required = true)
-    private String letter;
+    private final String letter;
 }
