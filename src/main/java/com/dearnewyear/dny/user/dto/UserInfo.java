@@ -2,6 +2,7 @@ package com.dearnewyear.dny.user.dto;
 
 import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
+import java.util.List;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
@@ -26,4 +27,7 @@ public class UserInfo {
 
     @ApiModelProperty(value = "유저 메인 LP")
     private final String mainLp;
+
+    @ApiModelProperty(value = "playlist")
+    private final List<String> playlist;
 }
