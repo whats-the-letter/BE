@@ -9,6 +9,7 @@ import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 import io.swagger.annotations.ApiResponses;
 import javax.servlet.http.HttpServletRequest;
+import javax.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -32,7 +33,7 @@ public class AlbumController {
             @io.swagger.annotations.ApiResponse(code = 404, message = "앨범 보내기 실패")
     })
     @PostMapping("/send")
-    public ResponseEntity<String> sendAlbum(@ModelAttribute AlbumRequest albumRequest, HttpServletRequest request) {
+    public ResponseEntity<String> sendAlbum(@ModelAttribute @Valid AlbumRequest albumRequest, HttpServletRequest request) {
         try {
             albumService.sendAlbum(albumRequest, request);
             return ResponseEntity.ok("앨범 보내기 성공");

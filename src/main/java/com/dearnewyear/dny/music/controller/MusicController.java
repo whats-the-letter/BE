@@ -7,6 +7,7 @@ import com.dearnewyear.dny.music.service.MusicService;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 import io.swagger.annotations.ApiResponses;
+import javax.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -44,7 +45,7 @@ public class MusicController {
             @io.swagger.annotations.ApiResponse(code = 500, message = "음악 추가 실패")
     })
     @PostMapping("/add")
-    public ResponseEntity<String> addMusic(@ModelAttribute AddMusicRequest addMusicRequest) {
+    public ResponseEntity<String> addMusic(@ModelAttribute @Valid AddMusicRequest addMusicRequest) {
         try {
             musicService.addMusic(addMusicRequest);
             return ResponseEntity.status(201).body("음악 추가 성공");
