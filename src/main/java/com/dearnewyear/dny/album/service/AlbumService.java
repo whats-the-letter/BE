@@ -14,6 +14,8 @@ import com.dearnewyear.dny.music.domain.Music;
 import com.dearnewyear.dny.music.repository.MusicRepository;
 import com.dearnewyear.dny.user.domain.User;
 import com.dearnewyear.dny.user.repository.UserRepository;
+import java.util.List;
+import java.util.stream.Collectors;
 import javax.servlet.http.HttpServletRequest;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.core.Authentication;
@@ -68,6 +70,17 @@ public class AlbumService {
         checkAlbumPermission(album, authentication);
 
         return new AlbumInfo(album);
+    }
+
+    public List<AlbumInfo> viewCollection(HttpServletRequest request) {
+        String accessToken = jwtTokenProvider.getAccessToken(request);
+        User user = userRepository.findById(jwtTokenProvider.getUserId(accessToken))
+                .orElseThrow(() -> new CustomException(ErrorCode.USER_NOT_FOUND));
+
+        List<Album> albumList = albumRepository.findByToUser(user);
+        return albumList.stream()
+                .map(AlbumInfo::new)
+                .collect(Collectors.toList());
     }
 
     private void checkAlbumPermission(Album album, Authentication authentication) {
