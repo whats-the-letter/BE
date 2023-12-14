@@ -10,6 +10,7 @@ import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 import io.swagger.annotations.ApiResponses;
 import javax.servlet.http.HttpServletResponse;
+import javax.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.ModelAttribute;
@@ -30,10 +31,10 @@ public class AuthController {
     @ApiOperation(value = "회원가입")
     @ApiResponses({
             @io.swagger.annotations.ApiResponse(code = 200, message = "회원가입 성공"),
-            @io.swagger.annotations.ApiResponse(code = 400, message = "회원가입 실패")
+            @io.swagger.annotations.ApiResponse(code = 400, message = "회원가입 실패 또는 유효성 검사 실패"),
     })
     @PostMapping("/signup")
-    public ResponseEntity<AuthResponse> signup(@ModelAttribute SignupRequest request, HttpServletResponse response) {
+    public ResponseEntity<AuthResponse> signup(@ModelAttribute @Valid SignupRequest request, HttpServletResponse response) {
         try {
             UserInfo userInfo = userService.signupAndLoginUser(request, response);
             return ResponseEntity.ok(new AuthResponse(userInfo, null));
@@ -48,7 +49,7 @@ public class AuthController {
             @io.swagger.annotations.ApiResponse(code = 404, message = "회원가입 필요")
     })
     @PostMapping("/login")
-    public ResponseEntity<AuthResponse> login(@RequestBody LoginRequest request, HttpServletResponse response) {
+    public ResponseEntity<AuthResponse> login(@RequestBody @Valid LoginRequest request, HttpServletResponse response) {
         try {
             UserInfo userInfo = userService.loginUser(request, response);
             return ResponseEntity.ok(new AuthResponse(userInfo, null));

@@ -14,6 +14,8 @@ import com.dearnewyear.dny.music.domain.Music;
 import com.dearnewyear.dny.music.repository.MusicRepository;
 import com.dearnewyear.dny.user.domain.User;
 import com.dearnewyear.dny.user.repository.UserRepository;
+import java.util.List;
+import java.util.stream.Collectors;
 import javax.servlet.http.HttpServletRequest;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.core.Authentication;
@@ -30,13 +32,13 @@ public class AlbumService {
     private final AlbumRepository albumRepository;
     private final MusicRepository musicRepository;
 
-    public void sendAlbum(AlbumRequest albumRequest, HttpServletRequest request) {
+    public AlbumInfo sendAlbum(AlbumRequest albumRequest, HttpServletRequest request) {
         String accessToken = jwtTokenProvider.getAccessToken(request);
         User fromUser = userRepository.findById(jwtTokenProvider.getUserId(accessToken))
                 .orElseThrow(() -> new CustomException(ErrorCode.USER_NOT_FOUND));
 
-        User toUser = null;
         Long toUserId = albumRequest.getToUserId();
+        User toUser = null;
         if (toUserId != null)
             toUser = userRepository.findById(toUserId)
                     .orElseThrow(() -> new CustomException(ErrorCode.USER_NOT_FOUND));
@@ -56,6 +58,7 @@ public class AlbumService {
                 .letter(albumRequest.getLetter())
                 .build();
         albumRepository.save(album);
+        return new AlbumInfo(album);
     }
 
     public AlbumInfo viewAlbum(Long albumId, HttpServletRequest request) {
@@ -66,18 +69,18 @@ public class AlbumService {
         Authentication authentication = jwtTokenProvider.getAuthentication(accessToken);
         checkAlbumPermission(album, authentication);
 
-        return AlbumInfo.builder()
-                .albumId(album.getAlbumId())
-                .albumCover(String.valueOf(album.getAlbumCover()))
-                .albumPhrases(String.valueOf(album.getAlbumPhrases()))
-                .albumBackground(String.valueOf(album.getAlbumBackground()))
-                .musicName(album.getMusic().getMusicName())
-                .musicArtist(album.getMusic().getMusicArtist())
-                .youtubeUrlId(album.getMusic().getYoutubeUrlId())
-                .fromName(album.getFromName())
-                .toName(album.getToName())
-                .letter(album.getLetter())
-                .build();
+        return new AlbumInfo(album);
+    }
+
+    public List<AlbumInfo> viewCollection(HttpServletRequest request) {
+        String accessToken = jwtTokenProvider.getAccessToken(request);
+        User user = userRepository.findById(jwtTokenProvider.getUserId(accessToken))
+                .orElseThrow(() -> new CustomException(ErrorCode.USER_NOT_FOUND));
+
+        List<Album> albumList = albumRepository.findByToUser(user);
+        return albumList.stream()
+                .map(AlbumInfo::new)
+                .collect(Collectors.toList());
     }
 
     private void checkAlbumPermission(Album album, Authentication authentication) {
@@ -92,10 +95,10 @@ public class AlbumService {
     }
 
     private boolean isFromUser(User fromUser, Authentication authentication) {
-        return fromUser.equals(authentication.getPrincipal());
+        return fromUser.getUserName().equals(authentication.getName());
     }
 
     private boolean isToUser(User toUser, Authentication authentication) {
-        return toUser.equals(authentication.getPrincipal());
+        return toUser.getUserName().equals(authentication.getName());
     }
 }
