@@ -31,7 +31,7 @@ public class AuthController {
     @ApiOperation(value = "회원가입")
     @ApiResponses({
             @io.swagger.annotations.ApiResponse(code = 200, message = "회원가입 성공"),
-            @io.swagger.annotations.ApiResponse(code = 400, message = "회원가입 실패")
+            @io.swagger.annotations.ApiResponse(code = 400, message = "회원가입 실패 또는 유효성 검사 실패"),
     })
     @PostMapping("/signup")
     public ResponseEntity<AuthResponse> signup(@ModelAttribute @Valid SignupRequest request, HttpServletResponse response) {

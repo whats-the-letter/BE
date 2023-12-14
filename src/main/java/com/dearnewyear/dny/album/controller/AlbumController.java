@@ -32,6 +32,7 @@ public class AlbumController {
     @ApiOperation(value = "앨범 보내기")
     @ApiResponses({
             @io.swagger.annotations.ApiResponse(code = 200, message = "앨범 보내기 성공"),
+            @io.swagger.annotations.ApiResponse(code = 400, message = "앨범 보내기 권한 없거나 유효성 검사 실패"),
             @io.swagger.annotations.ApiResponse(code = 404, message = "앨범 보내기 실패")
     })
     @PostMapping("/send")
