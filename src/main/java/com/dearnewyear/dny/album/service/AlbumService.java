@@ -30,13 +30,13 @@ public class AlbumService {
     private final AlbumRepository albumRepository;
     private final MusicRepository musicRepository;
 
-    public void sendAlbum(AlbumRequest albumRequest, HttpServletRequest request) {
+    public AlbumInfo sendAlbum(AlbumRequest albumRequest, HttpServletRequest request) {
         String accessToken = jwtTokenProvider.getAccessToken(request);
         User fromUser = userRepository.findById(jwtTokenProvider.getUserId(accessToken))
                 .orElseThrow(() -> new CustomException(ErrorCode.USER_NOT_FOUND));
 
-        User toUser = null;
         Long toUserId = albumRequest.getToUserId();
+        User toUser = null;
         if (toUserId != null)
             toUser = userRepository.findById(toUserId)
                     .orElseThrow(() -> new CustomException(ErrorCode.USER_NOT_FOUND));
@@ -56,6 +56,7 @@ public class AlbumService {
                 .letter(albumRequest.getLetter())
                 .build();
         albumRepository.save(album);
+        return new AlbumInfo(album);
     }
 
     public AlbumInfo viewAlbum(Long albumId, HttpServletRequest request) {
@@ -66,18 +67,7 @@ public class AlbumService {
         Authentication authentication = jwtTokenProvider.getAuthentication(accessToken);
         checkAlbumPermission(album, authentication);
 
-        return AlbumInfo.builder()
-                .albumId(album.getAlbumId())
-                .albumCover(String.valueOf(album.getAlbumCover()))
-                .albumPhrases(String.valueOf(album.getAlbumPhrases()))
-                .albumBackground(String.valueOf(album.getAlbumBackground()))
-                .musicName(album.getMusic().getMusicName())
-                .musicArtist(album.getMusic().getMusicArtist())
-                .youtubeUrlId(album.getMusic().getYoutubeUrlId())
-                .fromName(album.getFromName())
-                .toName(album.getToName())
-                .letter(album.getLetter())
-                .build();
+        return new AlbumInfo(album);
     }
 
     private void checkAlbumPermission(Album album, Authentication authentication) {

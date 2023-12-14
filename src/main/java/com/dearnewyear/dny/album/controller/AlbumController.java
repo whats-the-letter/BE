@@ -33,12 +33,12 @@ public class AlbumController {
             @io.swagger.annotations.ApiResponse(code = 404, message = "앨범 보내기 실패")
     })
     @PostMapping("/send")
-    public ResponseEntity<String> sendAlbum(@ModelAttribute @Valid AlbumRequest albumRequest, HttpServletRequest request) {
+    public ResponseEntity<AlbumResponse> sendAlbum(@ModelAttribute @Valid AlbumRequest albumRequest, HttpServletRequest request) {
         try {
-            albumService.sendAlbum(albumRequest, request);
-            return ResponseEntity.ok("앨범 보내기 성공");
+            AlbumInfo albumInfo = albumService.sendAlbum(albumRequest, request);
+            return ResponseEntity.ok(new AlbumResponse(albumInfo, null));
         } catch (CustomException e) {
-            return ResponseEntity.status(e.getErrorCode().getStatus()).body(e.getMessage());
+            return ResponseEntity.status(e.getErrorCode().getStatus()).body(new AlbumResponse(null, e.getMessage()));
         }
     }
 

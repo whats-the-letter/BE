@@ -1,5 +1,6 @@
 package com.dearnewyear.dny.album.dto;
 
+import com.dearnewyear.dny.album.domain.Album;
 import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
 import lombok.AllArgsConstructor;
@@ -41,4 +42,17 @@ public class AlbumInfo {
 
     @ApiModelProperty(value = "편지 내용")
     private final String letter;
+
+    public AlbumInfo(Album album) {
+        this.albumId = album.getAlbumId();
+        this.albumCover = album.getAlbumCover().name();
+        this.albumPhrases = album.getAlbumPhrases().name();
+        this.albumBackground = album.getAlbumBackground().name();
+        this.musicName = album.getMusic().getMusicName();
+        this.musicArtist = album.getMusic().getMusicArtist();
+        this.youtubeUrlId = album.getMusic().getYoutubeUrlId();
+        this.fromName = album.getFromName();
+        this.toName = album.getToName();
+        this.letter = album.getLetter();
+    }
 }
