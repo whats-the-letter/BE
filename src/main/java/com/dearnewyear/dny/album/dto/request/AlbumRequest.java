@@ -1,7 +1,12 @@
 package com.dearnewyear.dny.album.dto.request;
 
+import static com.dearnewyear.dny.album.domain.constant.AlbumPatterns.ALBUM_BACKGROUND_PATTERN;
+import static com.dearnewyear.dny.album.domain.constant.AlbumPatterns.ALBUM_COVER_PATTERN;
+import static com.dearnewyear.dny.album.domain.constant.AlbumPatterns.ALBUM_PHRASES_PATTERN;
+
 import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
+import javax.validation.constraints.AssertFalse;
 import javax.validation.constraints.NotEmpty;
 import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Positive;
@@ -45,4 +50,19 @@ public class AlbumRequest {
     @NotEmpty
     @ApiModelProperty(value = "편지 내용", required = true)
     private final String letter;
+
+    @AssertFalse(message = "앨범 커버가 유효하지 않습니다.")
+    public boolean isValidAlbumCover() {
+        return ALBUM_COVER_PATTERN.matches(albumCover);
+    }
+
+    @AssertFalse(message = "앨범 문구가 유효하지 않습니다.")
+    public boolean isValidAlbumPhrases() {
+        return ALBUM_PHRASES_PATTERN.matches(albumPhrases);
+    }
+
+    @AssertFalse(message = "앨범 배경이 유효하지 않습니다.")
+    public boolean isValidAlbumBackground() {
+        return ALBUM_BACKGROUND_PATTERN.matches(albumBackground);
+    }
 }

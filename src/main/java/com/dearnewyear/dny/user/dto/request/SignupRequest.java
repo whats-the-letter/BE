@@ -1,7 +1,11 @@
 package com.dearnewyear.dny.user.dto.request;
 
+import static com.dearnewyear.dny.user.domain.constant.UserPatterns.MAIN_BACKGROUND_PATTERN;
+import static com.dearnewyear.dny.user.domain.constant.UserPatterns.MAIN_LP_PATTERN;
+
 import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
+import javax.validation.constraints.AssertFalse;
 import javax.validation.constraints.Email;
 import javax.validation.constraints.NotEmpty;
 import javax.validation.constraints.NotNull;
@@ -28,4 +32,14 @@ public class SignupRequest {
     @NotNull
     @ApiModelProperty(value = "유저 메인 LP", required = true)
     private final String mainLp;
+
+    @AssertFalse(message = "유저 메인 배경이 유효하지 않습니다.")
+    public boolean isValidMainBackground() {
+        return MAIN_BACKGROUND_PATTERN.matches(mainBackground);
+    }
+
+    @AssertFalse(message = "유저 메인 LP가 유효하지 않습니다.")
+    public boolean isValidMainLp() {
+        return MAIN_LP_PATTERN.matches(mainLp);
+    }
 }
