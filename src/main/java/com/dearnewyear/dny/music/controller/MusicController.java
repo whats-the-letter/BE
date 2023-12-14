@@ -42,6 +42,7 @@ public class MusicController {
     @ApiOperation(value = "음악 추가")
     @ApiResponses({
             @io.swagger.annotations.ApiResponse(code = 201, message = "음악 추가 성공"),
+            @io.swagger.annotations.ApiResponse(code = 400, message = "카테고리 유효성 검사 실패"),
             @io.swagger.annotations.ApiResponse(code = 500, message = "음악 추가 실패")
     })
     @PostMapping("/add")

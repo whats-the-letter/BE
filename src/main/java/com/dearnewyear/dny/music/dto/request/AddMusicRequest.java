@@ -1,7 +1,11 @@
 package com.dearnewyear.dny.music.dto.request;
 
+import static com.dearnewyear.dny.music.domain.constant.MusicPatterns.MUSIC_CATEGORY;
+
 import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
+import java.util.regex.Pattern;
+import javax.validation.constraints.AssertTrue;
 import javax.validation.constraints.NotEmpty;
 import javax.validation.constraints.NotNull;
 import lombok.AllArgsConstructor;
@@ -27,4 +31,9 @@ public class AddMusicRequest {
     @NotNull
     @ApiModelProperty(value = "카테고리", required = true)
     private final String category;
+
+    @AssertTrue(message = "카테고리가 유효하지 않습니다.")
+    public boolean isValidCategory() {
+        return Pattern.matches(MUSIC_CATEGORY, category);
+    }
 }
