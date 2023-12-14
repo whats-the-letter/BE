@@ -82,10 +82,10 @@ public class AlbumService {
     }
 
     private boolean isFromUser(User fromUser, Authentication authentication) {
-        return fromUser.equals(authentication.getPrincipal());
+        return fromUser.getUserName().equals(authentication.getName());
     }
 
     private boolean isToUser(User toUser, Authentication authentication) {
-        return toUser.equals(authentication.getPrincipal());
+        return toUser.getUserName().equals(authentication.getName());
     }
 }
