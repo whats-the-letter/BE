@@ -83,6 +83,19 @@ public class AlbumService {
                 .collect(Collectors.toList());
     }
 
+    public void addAlbumToCollection(Long albumId, HttpServletRequest request) {
+        Album album = albumRepository.findById(albumId)
+                .orElseThrow(() -> new CustomException(ErrorCode.ALBUM_NOT_FOUND));
+        if (album.getToUser() != null)
+            throw new CustomException(ErrorCode.ALBUM_NOT_AUTHORIZED);
+
+        String accessToken = jwtTokenProvider.getAccessToken(request);
+        User user = userRepository.findById(jwtTokenProvider.getUserId(accessToken))
+                .orElseThrow(() -> new CustomException(ErrorCode.USER_NOT_FOUND));
+
+        album.updateTo(user);
+    }
+
     private void checkAlbumPermission(Album album, Authentication authentication) {
         if (album.getToUser() == null)
             return;

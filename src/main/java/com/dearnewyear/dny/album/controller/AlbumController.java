@@ -18,6 +18,7 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
@@ -74,6 +75,22 @@ public class AlbumController {
             return ResponseEntity.ok(new CollectionResponse(collection, null));
         } catch (CustomException e) {
             return ResponseEntity.status(e.getErrorCode().getStatus()).body(new CollectionResponse(null, e.getMessage()));
+        }
+    }
+
+    @ApiOperation(value = "내 컬렉션에 추가")
+    @ApiResponses({
+            @io.swagger.annotations.ApiResponse(code = 200, message = "컬렉션에 추가 성공"),
+            @io.swagger.annotations.ApiResponse(code = 400, message = "컬렉션에 추가 권한 없음"),
+            @io.swagger.annotations.ApiResponse(code = 404, message = "컬렉션에 추가 실패")
+    })
+    @PutMapping("/collection/{albumId}")
+    public ResponseEntity<String> addCollection(@PathVariable Long albumId, HttpServletRequest request) {
+        try {
+            albumService.addAlbumToCollection(albumId, request);
+            return ResponseEntity.ok("컬렉션에 추가 성공");
+        } catch (CustomException e) {
+            return ResponseEntity.status(e.getErrorCode().getStatus()).body(e.getMessage());
         }
     }
 }
