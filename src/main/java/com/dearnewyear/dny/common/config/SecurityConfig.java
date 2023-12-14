@@ -28,7 +28,7 @@ public class SecurityConfig {
         config.setAllowCredentials(false);
         config.setAllowedOrigins(List.of("*"));
         config.setAllowedHeaders(List.of("Authorization", "DNY-Refresh", "Content-Type"));
-        config.setAllowedMethods(List.of("GET", "POST"));
+        config.setAllowedMethods(List.of("GET", "POST", "PUT"));
         source.registerCorsConfiguration("/**", config);
         return source;
     }
