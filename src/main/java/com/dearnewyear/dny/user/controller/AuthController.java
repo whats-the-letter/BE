@@ -4,7 +4,7 @@ import com.dearnewyear.dny.common.error.exception.CustomException;
 import com.dearnewyear.dny.user.dto.UserInfo;
 import com.dearnewyear.dny.user.dto.request.LoginRequest;
 import com.dearnewyear.dny.user.dto.request.SignupRequest;
-import com.dearnewyear.dny.user.dto.response.AuthResponse;
+import com.dearnewyear.dny.user.dto.response.UserInfoResponse;
 import com.dearnewyear.dny.user.service.UserService;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
@@ -34,12 +34,12 @@ public class AuthController {
             @io.swagger.annotations.ApiResponse(code = 400, message = "회원가입 실패 또는 유효성 검사 실패"),
     })
     @PostMapping("/signup")
-    public ResponseEntity<AuthResponse> signup(@ModelAttribute @Valid SignupRequest request, HttpServletResponse response) {
+    public ResponseEntity<UserInfoResponse> signup(@ModelAttribute @Valid SignupRequest request, HttpServletResponse response) {
         try {
             UserInfo userInfo = userService.signupAndLoginUser(request, response);
-            return ResponseEntity.ok(new AuthResponse(userInfo, null));
+            return ResponseEntity.ok(new UserInfoResponse(userInfo, null));
         } catch (CustomException e) {
-            return ResponseEntity.status(e.getErrorCode().getStatus()).body(new AuthResponse(null, e.getMessage()));
+            return ResponseEntity.status(e.getErrorCode().getStatus()).body(new UserInfoResponse(null, e.getMessage()));
         }
     }
 
@@ -49,12 +49,12 @@ public class AuthController {
             @io.swagger.annotations.ApiResponse(code = 404, message = "회원가입 필요")
     })
     @PostMapping("/login")
-    public ResponseEntity<AuthResponse> login(@RequestBody @Valid LoginRequest request, HttpServletResponse response) {
+    public ResponseEntity<UserInfoResponse> login(@RequestBody @Valid LoginRequest request, HttpServletResponse response) {
         try {
             UserInfo userInfo = userService.loginUser(request, response);
-            return ResponseEntity.ok(new AuthResponse(userInfo, null));
+            return ResponseEntity.ok(new UserInfoResponse(userInfo, null));
         } catch (CustomException e) {
-            return ResponseEntity.status(e.getErrorCode().getStatus()).body(new AuthResponse(null, e.getMessage()));
+            return ResponseEntity.status(e.getErrorCode().getStatus()).body(new UserInfoResponse(null, e.getMessage()));
         }
     }
 

@@ -19,7 +19,7 @@ public class UserInfo {
     @ApiModelProperty(value = "유저 닉네임")
     private final String userName;
 
-    @ApiModelProperty(value = "유저 이메일")
+    @ApiModelProperty(value = "유저 이메일, 타 유저 정보 조회 시에는 null")
     private final String email;
 
     @ApiModelProperty(value = "유저 메인 배경")

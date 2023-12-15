@@ -49,6 +49,18 @@ public class UserService {
         response.setHeader("Authorization", "Bearer " + newAccessToken);
     }
 
+    public UserInfo getOtherUserInfo(Long userId) {
+        User user = userRepository.findById(userId)
+                .orElseThrow(() -> new CustomException(ErrorCode.USER_NOT_FOUND));
+        return UserInfo.builder()
+                .userId(user.getUserId())
+                .userName(user.getUserName())
+                .mainBackground(String.valueOf(user.getMainBackground()))
+                .mainLp(String.valueOf(user.getMainLp()))
+                .playlist(getPlaylist(user))
+                .build();
+    }
+
     private UserInfo getUserInfo(HttpServletResponse response, User user) {
         String accessToken = jwtTokenProvider.createAccessToken(user);
         String refreshToken = jwtTokenProvider.createRefreshToken(user);
