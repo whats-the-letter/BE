@@ -9,7 +9,7 @@ import lombok.Getter;
 @Getter
 @ApiModel(value = "로그인 응답 모델")
 @AllArgsConstructor
-public class AuthResponse {
+public class UserInfoResponse {
 
     @ApiModelProperty(value = "유저 정보")
     private UserInfo userInfo;
