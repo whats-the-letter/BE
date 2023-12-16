@@ -31,8 +31,8 @@ public class HttpLoggingAop {
 
     private void logResponse(ResponseEntity responseEntity) {
         if (!responseEntity.getStatusCode().is2xxSuccessful()) {
-            log.error("ErrorCode: {}", responseEntity.getStatusCode());
-            log.error("ErrorMessage: {}", responseEntity.getBody());
+            log.info("ErrorCode: {}", responseEntity.getStatusCode());
+            log.info("ErrorMessage: {}", responseEntity.getBody());
             return;
         }
         log.info("StatusCode: {}", responseEntity.getStatusCode());
