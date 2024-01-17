@@ -2,9 +2,9 @@ package com.dearnewyear.dny.user.controller;
 
 import com.dearnewyear.dny.common.error.exception.CustomException;
 import com.dearnewyear.dny.user.dto.UserInfo;
-import com.dearnewyear.dny.user.dto.request.LoginRequest;
 import com.dearnewyear.dny.user.dto.request.SignupRequest;
 import com.dearnewyear.dny.user.dto.response.UserInfoResponse;
+import com.dearnewyear.dny.user.service.KakaoOAuth2Service;
 import com.dearnewyear.dny.user.service.UserService;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
@@ -13,11 +13,12 @@ import javax.servlet.http.HttpServletResponse;
 import javax.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestHeader;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 @Api(tags = {"Auth"})
@@ -26,6 +27,7 @@ import org.springframework.web.bind.annotation.RestController;
 @RequestMapping("/auth")
 public class AuthController {
 
+    private final KakaoOAuth2Service kakaoOAuth2Service;
     private final UserService userService;
 
     @ApiOperation(value = "회원가입")
@@ -43,15 +45,20 @@ public class AuthController {
         }
     }
 
-    @ApiOperation(value = "로그인")
+    @ApiOperation(value = "카카오 로그인 후 발급받은 code로 DNY 로그인")
     @ApiResponses({
             @io.swagger.annotations.ApiResponse(code = 200, message = "로그인 성공"),
-            @io.swagger.annotations.ApiResponse(code = 404, message = "회원가입 필요")
+            @io.swagger.annotations.ApiResponse(code = 404, message = "회원가입 필요"),
+            @io.swagger.annotations.ApiResponse(code = 400, message = "유효하지 않은 코드")
     })
-    @PostMapping("/login")
-    public ResponseEntity<UserInfoResponse> login(@RequestBody @Valid LoginRequest request, HttpServletResponse response) {
+    @GetMapping("/login/kakao/code")
+    public ResponseEntity<UserInfoResponse> kakaoLogin(@RequestParam("code") String code, HttpServletResponse response) {
         try {
-            UserInfo userInfo = userService.loginUser(request, response);
+            response.setHeader("Content-Type", "application/json");
+            String accessToken = kakaoOAuth2Service.getAccessToken(code);
+            UserInfo userInfo = kakaoOAuth2Service.getKakaoUser(accessToken, response);
+            if (userInfo.getUserName() == null)
+                return ResponseEntity.status(404).body(new UserInfoResponse(userInfo, "회원가입 필요"));
             return ResponseEntity.ok(new UserInfoResponse(userInfo, null));
         } catch (CustomException e) {
             return ResponseEntity.status(e.getErrorCode().getStatus()).body(new UserInfoResponse(null, e.getMessage()));
