@@ -30,14 +30,14 @@ public class AuthController {
 
     @ApiOperation(value = "회원가입")
     @ApiResponses({
-            @io.swagger.annotations.ApiResponse(code = 200, message = "회원가입 성공"),
+            @io.swagger.annotations.ApiResponse(code = 201, message = "회원가입 성공"),
             @io.swagger.annotations.ApiResponse(code = 400, message = "회원가입 실패 또는 유효성 검사 실패"),
     })
     @PostMapping("/signup")
     public ResponseEntity<UserInfoResponse> signup(@ModelAttribute @Valid SignupRequest request, HttpServletResponse response) {
         try {
             UserInfo userInfo = userService.signupAndLoginUser(request, response);
-            return ResponseEntity.ok(new UserInfoResponse(userInfo, null));
+            return ResponseEntity.status(201).body(new UserInfoResponse(userInfo, null));
         } catch (CustomException e) {
             return ResponseEntity.status(e.getErrorCode().getStatus()).body(new UserInfoResponse(null, e.getMessage()));
         }
