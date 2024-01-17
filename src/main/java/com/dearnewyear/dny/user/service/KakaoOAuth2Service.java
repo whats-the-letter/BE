@@ -61,19 +61,19 @@ public class KakaoOAuth2Service {
         }
     }
 
-//    public UserInfo getKakaoUser(String token, HttpServletResponse response) {
-//        RestTemplate restTemplate = new RestTemplate();
-//        HttpHeaders headers = new HttpHeaders();
-//        headers.add("Authorization", "Bearer " + token);
-//        headers.add("Content-type", "application/x-www-form-urlencoded;charset=utf-8");
-//        ResponseEntity<Map> kakaoResponse = restTemplate.postForEntity(kakaoUserInfoUri, new HttpEntity<>(headers), Map.class);
-//
-//        if (kakaoResponse.getStatusCode() == HttpStatus.OK) {
-//            Map<String, Object> kakaoAccount = (Map<String, Object>) kakaoResponse.getBody().get("kakao_account");
-//            String email = (String) kakaoAccount.get("email");
-//            return userService.loginUser(email, response);
-//        } else {
-//            throw new CustomException(ErrorCode.KAKAO_OAUTH2_ERROR);
-//        }
-//    }
+    public UserInfo getKakaoUser(String token, HttpServletResponse response) {
+        RestTemplate restTemplate = new RestTemplate();
+        HttpHeaders headers = new HttpHeaders();
+        headers.add("Authorization", "Bearer " + token);
+        headers.add("Content-type", "application/x-www-form-urlencoded;charset=utf-8");
+        ResponseEntity<Map> kakaoResponse = restTemplate.postForEntity(kakaoUserInfoUri, new HttpEntity<>(headers), Map.class);
+
+        if (kakaoResponse.getStatusCode() == HttpStatus.OK) {
+            Map<String, Object> kakaoAccount = (Map<String, Object>) kakaoResponse.getBody().get("kakao_account");
+            String email = (String) kakaoAccount.get("email");
+            return userService.loginUser(email, response);
+        } else {
+            throw new CustomException(ErrorCode.KAKAO_OAUTH2_ERROR);
+        }
+    }
 }

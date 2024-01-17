@@ -54,7 +54,6 @@ public class JwtTokenProvider {
 
         claims.put("userId", user.getUserId());
         claims.put("userName", user.getUserName());
-        claims.put("email", user.getEmail());
 
         return Jwts.builder()
                 .setClaims(claims)
@@ -79,12 +78,9 @@ public class JwtTokenProvider {
 
         Long userId = claims.get("userId", Long.class);
         String userName = claims.get("userName", String.class);
-        String email = claims.get("email", String.class);
 
         Optional<User> user = userRepository.findById(userId);
-        if (user.isPresent()
-                && userName.equals(user.get().getUserName())
-                && email.equals(user.get().getEmail())) {
+        if (user.isPresent() && userName.equals(user.get().getUserName())) {
             return createAccessToken(user.get());
         } else {
             throw new CustomException(ErrorCode.INVALID_TOKEN);

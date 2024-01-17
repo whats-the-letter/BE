@@ -7,11 +7,11 @@ import com.dearnewyear.dny.common.error.exception.CustomException;
 import com.dearnewyear.dny.common.jwt.JwtTokenProvider;
 import com.dearnewyear.dny.user.domain.User;
 import com.dearnewyear.dny.user.dto.UserInfo;
-import com.dearnewyear.dny.user.dto.request.LoginRequest;
 import com.dearnewyear.dny.user.dto.request.SignupRequest;
 import com.dearnewyear.dny.user.repository.UserRepository;
 import java.util.Collections;
 import java.util.List;
+import java.util.Optional;
 import java.util.stream.Collectors;
 import javax.servlet.http.HttpServletResponse;
 import lombok.RequiredArgsConstructor;
@@ -37,11 +37,15 @@ public class UserService {
         return getUserInfo(response, user);
     }
 
-    public UserInfo loginUser(LoginRequest request, HttpServletResponse response) {
-        String email = request.getEmail();
-        User user = userRepository.findByEmail(email)
-                .orElseThrow(() -> new CustomException(ErrorCode.USER_NOT_FOUND));
-        return getUserInfo(response, user);
+    public UserInfo loginUser(String email, HttpServletResponse response) {
+        Optional<User> user = userRepository.findByEmail(email);
+        if (user.isPresent()) {
+            return getUserInfo(response, user.get());
+        } else {
+            return UserInfo.builder()
+                    .email(email)
+                    .build();
+        }
     }
 
     public void renewToken(String refreshToken, HttpServletResponse response) {
