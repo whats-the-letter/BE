@@ -19,7 +19,7 @@ import org.springframework.web.bind.annotation.RestController;
 @Api(tags = {"Music"})
 @RestController
 @RequiredArgsConstructor
-@RequestMapping("/music")
+@RequestMapping("/api/music")
 public class MusicController {
 
     private final MusicService musicService;
