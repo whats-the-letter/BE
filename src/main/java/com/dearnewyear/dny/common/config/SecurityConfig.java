@@ -42,8 +42,8 @@ public class SecurityConfig {
                 .and()
                 .csrf().disable()
                 .authorizeHttpRequests()
-                .antMatchers("/auth/**").permitAll()
-                .antMatchers("/music/**").permitAll() // Music API 테스트용
+                .antMatchers("/api/auth/**").permitAll()
+                .antMatchers("/api/music/**").permitAll() // Music API 테스트용
                 .antMatchers("/v2/api-docs", "/swagger-resources/**", "/swagger-ui/**", "/webjars/**", "/swagger/**").permitAll()
                 .anyRequest().authenticated()
                 .and()
