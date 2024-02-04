@@ -68,11 +68,14 @@ public class KakaoOAuth2Service {
         headers.add("Content-type", "application/x-www-form-urlencoded;charset=utf-8");
         ResponseEntity<Map> kakaoResponse = restTemplate.postForEntity(kakaoUserInfoUri, new HttpEntity<>(headers), Map.class);
 
-        if (kakaoResponse.getStatusCode() == HttpStatus.OK) {
+        try {
+            if (kakaoResponse.getStatusCode() != HttpStatus.OK)
+                throw new Exception();
+
             Map<String, Object> kakaoAccount = (Map<String, Object>) kakaoResponse.getBody().get("kakao_account");
             String email = (String) kakaoAccount.get("email");
             return userService.loginUser(email, response);
-        } else {
+        } catch (Exception e) {
             throw new CustomException(ErrorCode.KAKAO_OAUTH2_ERROR);
         }
     }
