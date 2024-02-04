@@ -45,7 +45,7 @@ public class AuthController {
         }
     }
 
-    @ApiOperation(value = "카카오 로그인 후 발급받은 code로 DNY 로그인")
+    @ApiOperation(value = "카카오 인가코드로 DNY 로그인")
     @ApiResponses({
             @io.swagger.annotations.ApiResponse(code = 200, message = "로그인 성공"),
             @io.swagger.annotations.ApiResponse(code = 404, message = "회원가입 필요"),
