@@ -25,7 +25,6 @@ public class SecurityConfig {
     public CorsConfigurationSource corsConfigurationSource() {
         UrlBasedCorsConfigurationSource source = new UrlBasedCorsConfigurationSource();
         CorsConfiguration config = new CorsConfiguration();
-        config.setAllowCredentials(true);
         config.setAllowedOrigins(List.of("*"));
         config.setAllowedHeaders(List.of("Authorization", "DNY-Refresh", "Content-Type"));
         config.setAllowedMethods(List.of("GET", "POST", "PUT"));
