@@ -4,6 +4,7 @@ import com.dearnewyear.dny.common.jwt.JwtAuthenticationFilter;
 import com.dearnewyear.dny.common.jwt.JwtTokenProvider;
 import java.util.List;
 import lombok.RequiredArgsConstructor;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
@@ -21,13 +22,23 @@ public class SecurityConfig {
 
     private final JwtTokenProvider jwtTokenProvider;
 
+    @Value("${cors.allowed-origins}")
+    private List<String> allowedOrigins;
+
+    @Value("${cors.allowed-headers}")
+    private List<String> allowedHeaders;
+
+    @Value("${cors.allowed-methods}")
+    private List<String> allowedMethods;
+
     @Bean
     public CorsConfigurationSource corsConfigurationSource() {
         UrlBasedCorsConfigurationSource source = new UrlBasedCorsConfigurationSource();
         CorsConfiguration config = new CorsConfiguration();
-        config.setAllowedOrigins(List.of("*"));
-        config.setAllowedHeaders(List.of("Authorization", "DNY-Refresh", "Content-Type"));
-        config.setAllowedMethods(List.of("GET", "POST", "PUT"));
+        config.setAllowCredentials(true);
+        config.setAllowedOrigins(allowedOrigins);
+        config.setAllowedHeaders(allowedHeaders);
+        config.setAllowedMethods(allowedMethods);
         source.registerCorsConfiguration("/**", config);
         return source;
     }
