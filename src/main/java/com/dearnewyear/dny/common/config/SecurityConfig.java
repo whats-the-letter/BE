@@ -38,6 +38,7 @@ public class SecurityConfig {
         config.setAllowCredentials(true);
         config.setAllowedOrigins(allowedOrigins);
         config.setAllowedHeaders(allowedHeaders);
+        config.setExposedHeaders(allowedHeaders);
         config.setAllowedMethods(allowedMethods);
         source.registerCorsConfiguration("/**", config);
         return source;
