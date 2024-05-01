@@ -1,11 +1,10 @@
 package com.dearnewyear.dny.album.repository;
 
 import com.dearnewyear.dny.album.domain.Album;
-import com.dearnewyear.dny.user.domain.User;
 import java.util.List;
-import org.springframework.data.jpa.repository.JpaRepository;
+import org.springframework.data.mongodb.repository.MongoRepository;
 
-public interface AlbumRepository extends JpaRepository<Album, Long> {
+public interface AlbumRepository extends MongoRepository<Album, String> {
 
-    List<Album> findByToUser(User user);
+    List<Album> findByToUserId(String toUserId);
 }

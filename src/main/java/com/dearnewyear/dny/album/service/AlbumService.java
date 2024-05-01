@@ -1,9 +1,6 @@
 package com.dearnewyear.dny.album.service;
 
 import com.dearnewyear.dny.album.domain.Album;
-import com.dearnewyear.dny.album.domain.constant.AlbumBackground;
-import com.dearnewyear.dny.album.domain.constant.AlbumCover;
-import com.dearnewyear.dny.album.domain.constant.AlbumPhrases;
 import com.dearnewyear.dny.album.dto.AlbumInfo;
 import com.dearnewyear.dny.album.dto.request.AlbumRequest;
 import com.dearnewyear.dny.album.repository.AlbumRepository;
@@ -15,6 +12,7 @@ import com.dearnewyear.dny.music.repository.MusicRepository;
 import com.dearnewyear.dny.user.domain.User;
 import com.dearnewyear.dny.user.repository.UserRepository;
 import java.util.List;
+import java.util.Optional;
 import java.util.stream.Collectors;
 import javax.servlet.http.HttpServletRequest;
 import lombok.RequiredArgsConstructor;
@@ -37,7 +35,7 @@ public class AlbumService {
         User fromUser = userRepository.findById(jwtTokenProvider.getUserId(accessToken))
                 .orElseThrow(() -> new CustomException(ErrorCode.USER_NOT_FOUND));
 
-        Long toUserId = albumRequest.getToUserId();
+        String toUserId = albumRequest.getToUserId();
         User toUser = null;
         if (toUserId != null)
             toUser = userRepository.findById(toUserId)
@@ -47,21 +45,21 @@ public class AlbumService {
                 .orElseThrow(() -> new CustomException(ErrorCode.MUSIC_NOT_FOUND));
 
         Album album = Album.builder()
-                .albumCover(AlbumCover.valueOf(albumRequest.getAlbumCover()))
-                .albumPhrases(AlbumPhrases.valueOf(albumRequest.getAlbumPhrases()))
-                .albumBackground(AlbumBackground.valueOf(albumRequest.getAlbumBackground()))
-                .music(music)
-                .fromUser(fromUser)
-                .toUser(toUser)
+                .albumCover(albumRequest.getAlbumCover())
+                .albumPhrases(albumRequest.getAlbumPhrases())
+                .albumBackground(albumRequest.getAlbumBackground())
+                .musicId(albumRequest.getMusicId())
+                .fromUserId(fromUser.getUserId())
+                .toUserId(toUserId)
                 .fromName(albumRequest.getFromName())
                 .toName(albumRequest.getToName())
                 .letter(albumRequest.getLetter())
                 .build();
         albumRepository.save(album);
-        return new AlbumInfo(album);
+        return new AlbumInfo(album, music);
     }
 
-    public AlbumInfo viewAlbum(Long albumId, HttpServletRequest request) {
+    public AlbumInfo viewAlbum(String albumId, HttpServletRequest request) {
         Album album = albumRepository.findById(albumId)
                 .orElseThrow(() -> new CustomException(ErrorCode.ALBUM_NOT_FOUND));
 
@@ -69,7 +67,8 @@ public class AlbumService {
         Authentication authentication = jwtTokenProvider.getAuthentication(accessToken);
         checkAlbumPermission(album, authentication);
 
-        return new AlbumInfo(album);
+        return new AlbumInfo(album, musicRepository.findById(album.getMusicId())
+                .orElseThrow(() -> new CustomException(ErrorCode.MUSIC_NOT_FOUND)));
     }
 
     public List<AlbumInfo> viewCollection(HttpServletRequest request) {
@@ -77,33 +76,37 @@ public class AlbumService {
         User user = userRepository.findById(jwtTokenProvider.getUserId(accessToken))
                 .orElseThrow(() -> new CustomException(ErrorCode.USER_NOT_FOUND));
 
-        List<Album> albumList = albumRepository.findByToUser(user);
+        List<Album> albumList = albumRepository.findByToUserId(user.getUserId());
         return albumList.stream()
-                .map(AlbumInfo::new)
-                .collect(Collectors.toList());
+                .map(album -> new AlbumInfo(album, musicRepository.findById(album.getMusicId())
+                        .orElseThrow(() -> new CustomException(ErrorCode.MUSIC_NOT_FOUND)))
+                ).collect(Collectors.toList());
     }
 
-    public void addAlbumToCollection(Long albumId, HttpServletRequest request) {
+    public void addAlbumToCollection(String albumId, HttpServletRequest request) {
         Album album = albumRepository.findById(albumId)
                 .orElseThrow(() -> new CustomException(ErrorCode.ALBUM_NOT_FOUND));
-        if (album.getToUser() != null)
+        if (album.getToUserId() != null)
             throw new CustomException(ErrorCode.ALBUM_NOT_AUTHORIZED);
 
         String accessToken = jwtTokenProvider.getAccessToken(request);
         User user = userRepository.findById(jwtTokenProvider.getUserId(accessToken))
                 .orElseThrow(() -> new CustomException(ErrorCode.USER_NOT_FOUND));
 
-        album.updateTo(user);
+        album.updateTo(user.getUserId());
     }
 
     private void checkAlbumPermission(Album album, Authentication authentication) {
-        if (album.getToUser() == null)
+        if (album.getToUserId() == null)
             return;
 
-        User fromUser = album.getFromUser();
-        User toUser = album.getToUser();
+        Optional<User> fromUser = userRepository.findById(album.getFromUserId());
+        Optional<User> toUser = userRepository.findById(album.getToUserId());
 
-        if (!isFromUser(fromUser, authentication) && !isToUser(toUser, authentication))
+        if (fromUser == null)
+            throw new CustomException(ErrorCode.USER_NOT_FOUND);
+
+        if (!isFromUser(fromUser.get(), authentication) && !isToUser(toUser.get(), authentication))
             throw new CustomException(ErrorCode.ALBUM_NOT_AUTHORIZED);
     }
 

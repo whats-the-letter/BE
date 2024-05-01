@@ -1,57 +1,63 @@
 package com.dearnewyear.dny.user.domain;
 
-import com.dearnewyear.dny.album.domain.Album;
 import com.dearnewyear.dny.user.domain.constant.MainBackground;
 import com.dearnewyear.dny.user.domain.constant.MainLp;
 import com.dearnewyear.dny.user.dto.request.SignupRequest;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
-import javax.persistence.*;
+import javax.validation.constraints.Email;
+import javax.validation.constraints.NotNull;
+import javax.validation.constraints.Size;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
-import org.hibernate.annotations.CreationTimestamp;
+import org.springframework.data.annotation.CreatedDate;
+import org.springframework.data.annotation.Id;
+import org.springframework.data.mongodb.core.mapping.Document;
+import org.springframework.data.mongodb.core.mapping.Field;
 import org.springframework.stereotype.Component;
 
-@Entity
-@Table(name = "USER")
+@Document(collection = "user")
 @Getter
 @NoArgsConstructor
 @Component
 public class User {
 
-    @Id @Column(name = "user_id")
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long userId;
+    @Id
+    private String userId;
 
-    @Column(name = "user_name", nullable = false, length = 6)
+    @Field(name = "user_name")
+    @NotNull
+    @Size(min = 2, max = 6)
     private String userName;
 
-    @Column(name = "email", nullable = false, unique = true, length = 30)
+    @Field(name = "email")
+    @NotNull
+    @Email
     private String email;
 
-    @Column(name = "main_background", nullable = false)
-    @Enumerated(EnumType.STRING)
+    @Field(name = "main_background")
+    @NotNull
     private MainBackground mainBackground;
 
-    @Column(name = "main_lp", nullable = false)
-    @Enumerated(EnumType.STRING)
+    @Field(name = "main_lp")
+    @NotNull
     private MainLp mainLp;
 
-    @Column(name = "created_at", nullable = false, updatable = false)
-    @CreationTimestamp
+    @Field(name = "created_at")
+    @CreatedDate
     private LocalDateTime createdAt;
 
-    @OneToMany(mappedBy = "fromUser", cascade = CascadeType.ALL)
-    private List<Album> sentAlbums = new ArrayList<>();
+    @Field(name = "sent_album_ids")
+    private List<String> sentAlbumIds = new ArrayList<>();
 
-    @OneToMany(mappedBy = "toUser", cascade = CascadeType.ALL)
-    private List<Album> receivedAlbums = new ArrayList<>();
+    @Field(name = "received_album_ids")
+    private List<String> receivedAlbumIds = new ArrayList<>();
 
     public User(SignupRequest request) {
         this.userName = request.getUserName();
         this.email = request.getEmail();
-        this.mainBackground = MainBackground.valueOf(request.getMainBackground());
-        this.mainLp = MainLp.valueOf(request.getMainLp());
+        this.mainBackground = request.getMainBackground();
+        this.mainLp = request.getMainLp();
     }
 }

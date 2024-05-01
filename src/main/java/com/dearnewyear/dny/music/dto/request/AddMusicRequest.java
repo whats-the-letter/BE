@@ -1,13 +1,13 @@
 package com.dearnewyear.dny.music.dto.request;
 
-import static com.dearnewyear.dny.music.domain.constant.MusicPatterns.MUSIC_CATEGORY;
-
+import com.dearnewyear.dny.music.domain.constant.Tag;
 import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
-import java.util.regex.Pattern;
+import java.util.List;
+import java.util.stream.Collectors;
 import javax.validation.constraints.AssertTrue;
+import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.NotEmpty;
-import javax.validation.constraints.NotNull;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 
@@ -16,24 +16,30 @@ import lombok.Getter;
 @ApiModel(value = "음악 추가 요청 모델")
 public class AddMusicRequest {
 
-    @NotEmpty
+    @NotBlank
     @ApiModelProperty(value = "음악 이름", required = true)
     private final String musicName;
 
-    @NotEmpty
+    @NotBlank
     @ApiModelProperty(value = "아티스트", required = true)
     private final String musicArtist;
 
-    @NotEmpty
+    @NotBlank
     @ApiModelProperty(value = "youtube url id", required = true)
     private final String youtubeUrlId;
 
-    @NotNull
-    @ApiModelProperty(value = "카테고리", required = true)
-    private final String category;
+    @NotEmpty
+    @ApiModelProperty(value = "태그", required = true)
+    private final List<String> tags;
 
-    @AssertTrue(message = "카테고리가 유효하지 않습니다.")
-    public boolean isValidCategory() {
-        return Pattern.matches(MUSIC_CATEGORY, category);
+    @AssertTrue(message = "유효하지 않은 태그입니다.")
+    public boolean isValidTags() {
+        return tags.stream().allMatch(Tag::isValidTag);
+    }
+
+    public List<Tag> getTags() {
+        return tags.stream()
+                .map(Tag::valueOf)
+                .collect(Collectors.toList());
     }
 }

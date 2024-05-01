@@ -3,66 +3,79 @@ package com.dearnewyear.dny.album.domain;
 import com.dearnewyear.dny.album.domain.constant.AlbumBackground;
 import com.dearnewyear.dny.album.domain.constant.AlbumCover;
 import com.dearnewyear.dny.album.domain.constant.AlbumPhrases;
-import com.dearnewyear.dny.music.domain.Music;
-import com.dearnewyear.dny.user.domain.User;
 import java.time.LocalDateTime;
-import javax.persistence.*;
+import javax.validation.constraints.NotNull;
+import javax.validation.constraints.Size;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
-import org.hibernate.annotations.CreationTimestamp;
+import org.springframework.data.annotation.CreatedDate;
+import org.springframework.data.annotation.Id;
+import org.springframework.data.mongodb.core.mapping.Document;
+import org.springframework.data.mongodb.core.mapping.Field;
 
-@Entity
-@Table(name = "ALBUM")
+@Document(collection = "album")
 @Getter
 @Builder
 @NoArgsConstructor
 @AllArgsConstructor
 public class Album {
 
-    @Id @Column(name = "album_id")
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long albumId;
+    @Id
+    private String albumId;
 
-    @Column(name = "album_cover", nullable = false)
-    @Enumerated(EnumType.STRING)
+    @Field(name = "album_cover")
+    @NotNull
     private AlbumCover albumCover;
 
-    @Column(name = "album_phrases", nullable = false)
-    @Enumerated(EnumType.STRING)
+    @Field(name = "album_phrases")
+    @NotNull
     private AlbumPhrases albumPhrases;
 
-    @Column(name = "album_background", nullable = false)
-    @Enumerated(EnumType.STRING)
+    @Field(name = "album_background")
+    @NotNull
     private AlbumBackground albumBackground;
 
-    @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "music_id", nullable = false)
-    private Music music;
+    @Field(name = "music_id")
+    @NotNull
+    private String musicId;
 
-    @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "from_user_id", nullable = false)
-    private User fromUser;
+    @Field(name = "from_user_id")
+    @NotNull
+    private String fromUserId;
 
-    @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "to_user_id")
-    private User toUser;
+    @Field(name = "to_user_id")
+    private String toUserId;
 
-    @Column(name = "from_name", nullable = false, length = 10)
+    @Field(name = "from_name")
+    @NotNull
+    @Size(min = 1, max = 10)
     private String fromName;
 
-    @Column(name = "to_name", nullable = false, length = 10)
+    @Field(name = "to_name")
+    @NotNull
+    @Size(min = 1, max = 10)
     private String toName;
 
-    @Column(name = "letter", nullable = false, length = 400)
+    @Field(name = "letter")
+    @NotNull
+    @Size(min = 1, max = 250)
     private String letter;
 
-    @Column(name = "created_at", nullable = false, updatable = false)
-    @CreationTimestamp
+    @Field(name = "front_image")
+    @NotNull
+    private String frontImage;
+
+    @Field(name = "back_image")
+    @NotNull
+    private String backImage;
+
+    @Field(name = "created_at")
+    @CreatedDate
     private LocalDateTime createdAt;
 
-    public void updateTo(User toUser) {
-        this.toUser = toUser;
+    public void updateTo(String toUserId) {
+        this.toUserId = toUserId;
     }
 }

@@ -29,7 +29,7 @@ public class UserController {
             @io.swagger.annotations.ApiResponse(code = 404, message = "메인 조회 실패")
     })
     @GetMapping("/main/{userId}")
-    public ResponseEntity<UserInfoResponse> getMainInfo(@PathVariable Long userId) {
+    public ResponseEntity<UserInfoResponse> getMainInfo(@PathVariable String userId) {
         try {
             UserInfo userInfo = userService.getOtherUserInfo(userId);
             return ResponseEntity.ok(new UserInfoResponse(userInfo, null));

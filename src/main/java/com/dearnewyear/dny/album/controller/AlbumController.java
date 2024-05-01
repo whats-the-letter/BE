@@ -53,7 +53,7 @@ public class AlbumController {
             @io.swagger.annotations.ApiResponse(code = 404, message = "앨범 조회 실패")
     })
     @GetMapping("/view/{albumId}")
-    public ResponseEntity<AlbumResponse> viewAlbum(@PathVariable Long albumId, HttpServletRequest request) {
+    public ResponseEntity<AlbumResponse> viewAlbum(@PathVariable String albumId, HttpServletRequest request) {
         try {
             AlbumInfo albumInfo = albumService.viewAlbum(albumId, request);
             return ResponseEntity.ok(new AlbumResponse(albumInfo, null));
@@ -85,7 +85,7 @@ public class AlbumController {
             @io.swagger.annotations.ApiResponse(code = 404, message = "컬렉션에 추가 실패")
     })
     @PutMapping("/collection/{albumId}")
-    public ResponseEntity<String> addCollection(@PathVariable Long albumId, HttpServletRequest request) {
+    public ResponseEntity<String> addCollection(@PathVariable String albumId, HttpServletRequest request) {
         try {
             albumService.addAlbumToCollection(albumId, request);
             return ResponseEntity.ok("컬렉션에 추가 성공");

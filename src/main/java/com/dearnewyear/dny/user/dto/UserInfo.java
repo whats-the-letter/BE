@@ -14,7 +14,7 @@ import lombok.Getter;
 public class UserInfo {
 
     @ApiModelProperty(value = "유저 ID")
-    private final Long userId;
+    private final String userId;
 
     @ApiModelProperty(value = "유저 닉네임")
     private final String userName;

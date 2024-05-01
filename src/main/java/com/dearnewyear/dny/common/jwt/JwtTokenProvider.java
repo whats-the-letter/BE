@@ -36,6 +36,12 @@ public class JwtTokenProvider {
     @Value("${jwt.refresh-token-expire-ms}")
     private long refreshTokenExpireMs;
 
+    @Value("${auth.header.authorization}")
+    private String authHeader;
+
+    @Value("${auth.header.refresh}")
+    private String refreshHeader;
+
     private final UserRepository userRepository;
 
     private Key getSignKey(String secretKey) {
@@ -48,7 +54,7 @@ public class JwtTokenProvider {
         Key key = getSignKey(secretKey);
 
         claims
-                .setSubject(Long.toString(user.getUserId()))
+                .setSubject(user.getUserId())
                 .setIssuedAt(now)
                 .setExpiration(new Date(now.getTime() + ms));
 
@@ -76,7 +82,7 @@ public class JwtTokenProvider {
                 .parseClaimsJws(refreshToken)
                 .getBody();
 
-        Long userId = claims.get("userId", Long.class);
+        String userId = claims.get("userId", String.class);
         String userName = claims.get("userName", String.class);
 
         Optional<User> user = userRepository.findById(userId);
@@ -88,7 +94,7 @@ public class JwtTokenProvider {
     }
 
     public String getAccessToken(HttpServletRequest request) {
-        String accessToken = request.getHeader("Authorization");
+        String accessToken = request.getHeader(authHeader);
         if (accessToken == null) {
             return null;
         } else {
@@ -97,7 +103,7 @@ public class JwtTokenProvider {
     }
 
     public String getRefreshToken(HttpServletRequest request) {
-        return request.getHeader("DNY-Refresh");
+        return request.getHeader(refreshHeader);
     }
 
     public boolean validateToken(String token) {
@@ -113,11 +119,11 @@ public class JwtTokenProvider {
         }
     }
 
-    public Long getUserId(String token) {
+    public String getUserId(String token) {
         JwtParser parser = Jwts.parserBuilder()
                 .setSigningKey(getSignKey(secretKey))
                 .build();
-        return parser.parseClaimsJws(token).getBody().get("userId", Long.class);
+        return parser.parseClaimsJws(token).getBody().get("userId", String.class);
     }
 
     public Authentication getAuthentication(String token) {
