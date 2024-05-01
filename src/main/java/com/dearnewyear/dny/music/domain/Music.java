@@ -1,44 +1,46 @@
 package com.dearnewyear.dny.music.domain;
 
-import com.dearnewyear.dny.album.domain.Album;
-import com.dearnewyear.dny.music.domain.constant.Category;
+import com.dearnewyear.dny.music.domain.constant.Tag;
 import com.dearnewyear.dny.music.dto.request.AddMusicRequest;
 import java.util.ArrayList;
 import java.util.List;
-import javax.persistence.*;
+import javax.validation.constraints.NotNull;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
+import org.springframework.data.annotation.Id;
+import org.springframework.data.mongodb.core.mapping.Document;
+import org.springframework.data.mongodb.core.mapping.Field;
 
-@Entity
-@Table(name = "MUSIC")
+@Document(collection = "music")
 @Getter
 @NoArgsConstructor
 public class Music {
 
-    @Id @Column(name = "music_id")
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @Id
     private Long musicId;
 
-    @Column(name = "music_name", nullable = false)
+    @Field(name = "music_name")
+    @NotNull
     private String musicName;
 
-    @Column(name = "music_artist", nullable = false)
+    @Field(name = "music_artist")
+    @NotNull
     private String musicArtist;
 
-    @Column(name = "youtube_url_id", nullable = false)
+    @Field(name = "youtube_url_id")
+    @NotNull
     private String youtubeUrlId;
 
-    @Column(name = "category", nullable = false)
-    @Enumerated(EnumType.STRING)
-    private Category category;
+    @Field(name = "tags")
+    private List<Tag> tags = new ArrayList<>();
 
-    @OneToMany(mappedBy = "music", cascade = CascadeType.ALL)
-    private List<Album> albums = new ArrayList<>();
+    @Field(name = "album_ids")
+    private List<String> albumIds = new ArrayList<>();
 
     public Music(AddMusicRequest addMusicRequest) {
         this.musicName = addMusicRequest.getMusicName();
         this.musicArtist = addMusicRequest.getMusicArtist();
         this.youtubeUrlId = addMusicRequest.getYoutubeUrlId();
-        this.category = Category.valueOf(addMusicRequest.getCategory());
+        this.tags = addMusicRequest.getTags();
     }
 }
