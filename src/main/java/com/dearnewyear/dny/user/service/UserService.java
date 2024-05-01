@@ -53,7 +53,7 @@ public class UserService {
         response.setHeader("Authorization", "Bearer " + newAccessToken);
     }
 
-    public UserInfo getOtherUserInfo(Long userId) {
+    public UserInfo getOtherUserInfo(String userId) {
         User user = userRepository.findById(userId)
                 .orElseThrow(() -> new CustomException(ErrorCode.USER_NOT_FOUND));
         return UserInfo.builder()
@@ -84,7 +84,7 @@ public class UserService {
     private List<String> getPlaylist(User user) {
         int PLAYLIST_COUNT = 7;
 
-        List<Album> albums = albumRepository.findByToUser(user);
+        List<Album> albums = albumRepository.findByToUserId(user.getUserId());
         Collections.shuffle(albums);
 
         int count = Math.min(albums.size(), PLAYLIST_COUNT);

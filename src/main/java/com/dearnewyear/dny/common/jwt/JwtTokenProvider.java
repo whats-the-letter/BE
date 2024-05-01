@@ -48,7 +48,7 @@ public class JwtTokenProvider {
         Key key = getSignKey(secretKey);
 
         claims
-                .setSubject(Long.toString(user.getUserId()))
+                .setSubject(user.getUserId())
                 .setIssuedAt(now)
                 .setExpiration(new Date(now.getTime() + ms));
 
@@ -76,7 +76,7 @@ public class JwtTokenProvider {
                 .parseClaimsJws(refreshToken)
                 .getBody();
 
-        Long userId = claims.get("userId", Long.class);
+        String userId = claims.get("userId", String.class);
         String userName = claims.get("userName", String.class);
 
         Optional<User> user = userRepository.findById(userId);
@@ -113,11 +113,11 @@ public class JwtTokenProvider {
         }
     }
 
-    public Long getUserId(String token) {
+    public String getUserId(String token) {
         JwtParser parser = Jwts.parserBuilder()
                 .setSigningKey(getSignKey(secretKey))
                 .build();
-        return parser.parseClaimsJws(token).getBody().get("userId", Long.class);
+        return parser.parseClaimsJws(token).getBody().get("userId", String.class);
     }
 
     public Authentication getAuthentication(String token) {
