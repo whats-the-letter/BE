@@ -1,8 +1,10 @@
 package com.dearnewyear.dny.music.dto;
 
 import com.dearnewyear.dny.music.domain.Music;
+import com.dearnewyear.dny.music.domain.constant.Tag;
 import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
+import java.util.List;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
@@ -25,14 +27,14 @@ public class MusicInfo {
     @ApiModelProperty(value = "유튜브 URL ID")
     private final String youtubeUrlId;
 
-    @ApiModelProperty(value = "카테고리")
-    private final String category;
+    @ApiModelProperty(value = "태그")
+    private List<Tag> tags;
 
     public MusicInfo(Music music) {
         this.musicId = music.getMusicId();
         this.musicName = music.getMusicName();
         this.musicArtist = music.getMusicArtist();
         this.youtubeUrlId = music.getYoutubeUrlId();
-        this.category = String.valueOf(music.getCategory());
+        this.tags = music.getTags();
     }
 }
