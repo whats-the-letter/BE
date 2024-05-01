@@ -36,6 +36,12 @@ public class KakaoOAuth2Service {
     @Value("${spring.security.oauth2.client.provider.kakao.user-info-uri}")
     private String kakaoUserInfoUri;
 
+    @Value("${auth.header.prefix}")
+    private String authHeaderPrefix;
+
+    @Value("${auth.header.authorization}")
+    private String authHeader;
+
     private final UserService userService;
 
     public String getAccessToken(String code) {
@@ -64,7 +70,7 @@ public class KakaoOAuth2Service {
     public UserInfo getKakaoUser(String token, HttpServletResponse response) {
         RestTemplate restTemplate = new RestTemplate();
         HttpHeaders headers = new HttpHeaders();
-        headers.add("Authorization", "Bearer " + token);
+        headers.add(authHeader, authHeaderPrefix + token);
         headers.add("Content-type", "application/x-www-form-urlencoded;charset=utf-8");
         ResponseEntity<Map> kakaoResponse = restTemplate.postForEntity(kakaoUserInfoUri, new HttpEntity<>(headers), Map.class);
 

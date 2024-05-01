@@ -12,6 +12,7 @@ import io.swagger.annotations.ApiResponses;
 import javax.servlet.http.HttpServletResponse;
 import javax.validation.Valid;
 import lombok.RequiredArgsConstructor;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.ModelAttribute;
@@ -29,6 +30,9 @@ public class AuthController {
 
     private final KakaoOAuth2Service kakaoOAuth2Service;
     private final UserService userService;
+
+    @Value("${auth.header.refresh}")
+    private String refreshHeader;
 
     @ApiOperation(value = "회원가입")
     @ApiResponses({
@@ -71,7 +75,7 @@ public class AuthController {
             @io.swagger.annotations.ApiResponse(code = 401, message = "AccessToken 갱신 실패")
     })
     @PostMapping("/renew")
-    public ResponseEntity<String> renewToken(@RequestHeader("DNY-Refresh") String refreshToken, HttpServletResponse response) {
+    public ResponseEntity<String> renewToken(@RequestHeader("#{@refreshHeader}") String refreshToken, HttpServletResponse response) {
         try {
             userService.renewToken(refreshToken, response);
             return ResponseEntity.ok("AccessToken 갱신 성공");

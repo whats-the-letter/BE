@@ -36,6 +36,12 @@ public class JwtTokenProvider {
     @Value("${jwt.refresh-token-expire-ms}")
     private long refreshTokenExpireMs;
 
+    @Value("${auth.header.authorization}")
+    private String authHeader;
+
+    @Value("${auth.header.refresh}")
+    private String refreshHeader;
+
     private final UserRepository userRepository;
 
     private Key getSignKey(String secretKey) {
@@ -88,7 +94,7 @@ public class JwtTokenProvider {
     }
 
     public String getAccessToken(HttpServletRequest request) {
-        String accessToken = request.getHeader("Authorization");
+        String accessToken = request.getHeader(authHeader);
         if (accessToken == null) {
             return null;
         } else {
@@ -97,7 +103,7 @@ public class JwtTokenProvider {
     }
 
     public String getRefreshToken(HttpServletRequest request) {
-        return request.getHeader("DNY-Refresh");
+        return request.getHeader(refreshHeader);
     }
 
     public boolean validateToken(String token) {

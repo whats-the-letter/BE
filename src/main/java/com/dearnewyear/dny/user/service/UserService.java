@@ -15,6 +15,7 @@ import java.util.Optional;
 import java.util.stream.Collectors;
 import javax.servlet.http.HttpServletResponse;
 import lombok.RequiredArgsConstructor;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -26,6 +27,15 @@ public class UserService {
     private final JwtTokenProvider jwtTokenProvider;
     private final UserRepository userRepository;
     private final AlbumRepository albumRepository;
+
+    @Value("${auth.header.prefix}")
+    private String authHeaderPrefix;
+
+    @Value("${auth.header.authorization}")
+    private String authHeader;
+
+    @Value("${auth.header.refresh}")
+    private String refreshHeader;
 
     public UserInfo signupAndLoginUser(SignupRequest request, HttpServletResponse response) {
         if (userRepository.findByEmail(request.getEmail()).isPresent())
@@ -50,7 +60,7 @@ public class UserService {
 
     public void renewToken(String refreshToken, HttpServletResponse response) {
         String newAccessToken = jwtTokenProvider.renewAccessToken(refreshToken);
-        response.setHeader("Authorization", "Bearer " + newAccessToken);
+        response.setHeader(authHeader, authHeaderPrefix + newAccessToken);
     }
 
     public UserInfo getOtherUserInfo(String userId) {
@@ -69,8 +79,8 @@ public class UserService {
         String accessToken = jwtTokenProvider.createAccessToken(user);
         String refreshToken = jwtTokenProvider.createRefreshToken(user);
 
-        response.setHeader("Authorization", "Bearer " + accessToken);
-        response.setHeader("DNY-Refresh", refreshToken);
+        response.setHeader(authHeader, authHeaderPrefix + accessToken);
+        response.setHeader(refreshHeader, refreshToken);
         return UserInfo.builder()
                 .userId(user.getUserId())
                 .userName(user.getUserName())
