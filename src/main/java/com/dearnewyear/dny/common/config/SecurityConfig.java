@@ -1,7 +1,6 @@
 package com.dearnewyear.dny.common.config;
 
 import com.dearnewyear.dny.common.jwt.JwtAuthenticationFilter;
-import com.dearnewyear.dny.common.jwt.JwtTokenProvider;
 import java.util.List;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Value;
@@ -20,8 +19,6 @@ import org.springframework.web.cors.UrlBasedCorsConfigurationSource;
 @RequiredArgsConstructor
 public class SecurityConfig {
 
-    private final JwtTokenProvider jwtTokenProvider;
-
     @Value("${cors.allowed-origins}")
     private List<String> allowedOrigins;
 
@@ -30,6 +27,8 @@ public class SecurityConfig {
 
     @Value("${cors.allowed-methods}")
     private List<String> allowedMethods;
+
+    private final JwtAuthenticationFilter jwtAuthenticationFilter;
 
     @Bean
     public CorsConfigurationSource corsConfigurationSource() {
@@ -58,7 +57,7 @@ public class SecurityConfig {
                 .antMatchers("/v2/api-docs", "/swagger-resources/**", "/swagger-ui/**", "/webjars/**", "/swagger/**").permitAll()
                 .anyRequest().authenticated()
                 .and()
-                .addFilterBefore(new JwtAuthenticationFilter(jwtTokenProvider), UsernamePasswordAuthenticationFilter.class);
+                .addFilterBefore(jwtAuthenticationFilter, UsernamePasswordAuthenticationFilter.class);
         return http.build();
     }
 }
