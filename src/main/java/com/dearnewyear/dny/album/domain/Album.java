@@ -12,6 +12,7 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import org.springframework.data.annotation.CreatedDate;
 import org.springframework.data.annotation.Id;
+import org.springframework.data.mongodb.core.index.Indexed;
 import org.springframework.data.mongodb.core.mapping.Document;
 import org.springframework.data.mongodb.core.mapping.Field;
 
@@ -64,15 +65,14 @@ public class Album {
     private String letter;
 
     @Field(name = "front_image")
-    @NotNull
     private String frontImage;
 
     @Field(name = "back_image")
-    @NotNull
     private String backImage;
 
     @Field(name = "created_at")
     @CreatedDate
+    @Indexed(expireAfter = "7d")
     private LocalDateTime createdAt;
 
     public void updateTo(String toUserId) {

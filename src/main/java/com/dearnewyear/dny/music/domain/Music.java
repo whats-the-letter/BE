@@ -17,7 +17,7 @@ import org.springframework.data.mongodb.core.mapping.Field;
 public class Music {
 
     @Id
-    private Long musicId;
+    private String musicId;
 
     @Field(name = "music_name")
     @NotNull

@@ -16,7 +16,7 @@ import lombok.Getter;
 public class MusicInfo {
 
     @ApiModelProperty(value = "음악 ID")
-    private final Long musicId;
+    private final String musicId;
 
     @ApiModelProperty(value = "음악 이름")
     private final String musicName;
