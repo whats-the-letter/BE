@@ -13,7 +13,7 @@ jobs:
         uses: actions/checkout@v3
 
       - name: Set up JDK 11
-        uses: actions/setup-java@v2
+        uses: actions/setup-java@v3
         with:
           java-version: '11'
           distribution: 'adopt'
@@ -37,14 +37,15 @@ jobs:
         run: docker push ${{ secrets.DOCKERHUB_USERNAME }}/dny-be:${{ env.TIME }}
 
       - name: Deploy to AWS
-        uses: appleboy/ssh-action@master
+        uses: appleboy/ssh-action@v1.0.3
         with:
           host: ${{ secrets.AWS_HOST }}
           username: ${{ secrets.AWS_USERNAME }}
           key: ${{ secrets.AWS_KEY }}
+          sudo: true
           script: |
-            sudo docker rm -f dny-be-container
-            sudo docker login -u ${{ secrets.DOCKERHUB_USERNAME }} -p ${{ secrets.DOCKERHUB_TOKEN }}
-            sudo docker pull ${{ secrets.DOCKERHUB_USERNAME }}/dny-be:${{ env.TIME }}
-            sudo docker run -d --name dny-be-container -p 80:8080 ${{ secrets.DOCKERHUB_USERNAME }}/dny-be:${{ env.TIME }}
-            sudo docker image prune -f
+            docker rm -f dny-be-container
+            docker login -u ${{ secrets.DOCKERHUB_USERNAME }} -p ${{ secrets.DOCKERHUB_TOKEN }}
+            docker pull ${{ secrets.DOCKERHUB_USERNAME }}/dny-be:${{ env.TIME }}
+            docker run -d --name dny-be-container -p 80:8080 ${{ secrets.DOCKERHUB_USERNAME }}/dny-be:${{ env.TIME }}
+            docker image prune -f
