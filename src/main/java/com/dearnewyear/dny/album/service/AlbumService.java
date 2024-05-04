@@ -7,6 +7,7 @@ import com.dearnewyear.dny.album.repository.AlbumRepository;
 import com.dearnewyear.dny.common.error.ErrorCode;
 import com.dearnewyear.dny.common.error.exception.CustomException;
 import com.dearnewyear.dny.common.jwt.JwtTokenProvider;
+import com.dearnewyear.dny.common.service.S3Service;
 import com.dearnewyear.dny.music.domain.Music;
 import com.dearnewyear.dny.music.repository.MusicRepository;
 import com.dearnewyear.dny.user.domain.User;
@@ -26,6 +27,7 @@ import org.springframework.transaction.annotation.Transactional;
 public class AlbumService {
 
     private final JwtTokenProvider jwtTokenProvider;
+    private final S3Service s3Service;
     private final UserRepository userRepository;
     private final AlbumRepository albumRepository;
     private final MusicRepository musicRepository;
@@ -41,8 +43,8 @@ public class AlbumService {
             toUser = userRepository.findById(toUserId)
                     .orElseThrow(() -> new CustomException(ErrorCode.USER_NOT_FOUND));
 
-        Music music = musicRepository.findById(albumRequest.getMusicId())
-                .orElseThrow(() -> new CustomException(ErrorCode.MUSIC_NOT_FOUND));
+        String frontImgName = s3Service.upload(albumRequest.getFrontImage());
+        String backImgName = s3Service.upload(albumRequest.getBackImage());
 
         Album album = Album.builder()
                 .albumCover(albumRequest.getAlbumCover())
@@ -54,6 +56,8 @@ public class AlbumService {
                 .fromName(albumRequest.getFromName())
                 .toName(albumRequest.getToName())
                 .letter(albumRequest.getLetter())
+                .frontImage(frontImgName)
+                .backImage(backImgName)
                 .build();
         albumRepository.save(album);
         return new AlbumInfo(album, music);
