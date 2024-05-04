@@ -49,6 +49,12 @@ public class AlbumInfo {
     @ApiModelProperty(value = "편지 내용")
     private final String letter;
 
+    @ApiModelProperty(value = "앨범 앞면 이미지")
+    private final String frontImage;
+
+    @ApiModelProperty(value = "앨범 뒷면 이미지")
+    private final String backImage;
+
     public AlbumInfo(Album album, Music music) {
         this.albumId = album.getAlbumId();
         this.albumCover = album.getAlbumCover().name();
@@ -61,5 +67,7 @@ public class AlbumInfo {
         this.fromName = album.getFromName();
         this.toName = album.getToName();
         this.letter = album.getLetter();
+        this.frontImage = album.getFrontImage();
+        this.backImage = album.getBackImage();
     }
 }

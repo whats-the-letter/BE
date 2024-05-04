@@ -10,6 +10,7 @@ import javax.validation.constraints.AssertTrue;
 import javax.validation.constraints.NotBlank;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
+import org.springframework.web.multipart.MultipartFile;
 
 @Getter
 @AllArgsConstructor
@@ -47,6 +48,12 @@ public class AlbumRequest {
     @NotBlank
     @ApiModelProperty(value = "편지 내용", required = true)
     private final String letter;
+
+    @ApiModelProperty(value = "앨범 앞면 이미지")
+    private final MultipartFile frontImage;
+
+    @ApiModelProperty(value = "앨범 뒷면 이미지")
+    private final MultipartFile backImage;
 
     @AssertTrue(message = "유효하지 않은 앨범 커버입니다.")
     public boolean isValidAlbumCover() {

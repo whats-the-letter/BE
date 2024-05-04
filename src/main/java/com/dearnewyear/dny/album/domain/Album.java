@@ -65,11 +65,9 @@ public class Album {
     private String letter;
 
     @Field(name = "front_image")
-    @NotNull
     private String frontImage;
 
     @Field(name = "back_image")
-    @NotNull
     private String backImage;
 
     @Field(name = "created_at")
