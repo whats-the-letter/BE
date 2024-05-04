@@ -60,7 +60,7 @@ public class UserService {
 
     public void renewToken(String refreshToken, HttpServletResponse response) {
         String newAccessToken = jwtTokenProvider.renewAccessToken(refreshToken);
-        response.setHeader(authHeader, authHeaderPrefix + newAccessToken);
+        response.setHeader(authHeader, authHeaderPrefix + " " + newAccessToken);
     }
 
     public UserInfo getOtherUserInfo(String userId) {
@@ -79,7 +79,7 @@ public class UserService {
         String accessToken = jwtTokenProvider.createAccessToken(user);
         String refreshToken = jwtTokenProvider.createRefreshToken(user);
 
-        response.setHeader(authHeader, authHeaderPrefix + accessToken);
+        response.setHeader(authHeader, authHeaderPrefix + " " + accessToken);
         response.setHeader(refreshHeader, refreshToken);
         return UserInfo.builder()
                 .userId(user.getUserId())
