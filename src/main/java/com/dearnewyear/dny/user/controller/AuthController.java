@@ -61,6 +61,7 @@ public class AuthController {
             response.setHeader("Content-Type", "application/json");
             String accessToken = kakaoOAuth2Service.getAccessToken(code);
             UserInfo userInfo = kakaoOAuth2Service.getKakaoUser(accessToken, response);
+
             if (userInfo.getUserName() == null)
                 return ResponseEntity.status(404).body(new UserInfoResponse(userInfo, "회원가입 필요"));
             return ResponseEntity.ok(new UserInfoResponse(userInfo, null));

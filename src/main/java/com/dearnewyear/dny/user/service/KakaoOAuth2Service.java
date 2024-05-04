@@ -70,7 +70,7 @@ public class KakaoOAuth2Service {
     public UserInfo getKakaoUser(String token, HttpServletResponse response) {
         RestTemplate restTemplate = new RestTemplate();
         HttpHeaders headers = new HttpHeaders();
-        headers.add(authHeader, authHeaderPrefix + token);
+        headers.add(authHeader, authHeaderPrefix + " " + token);
         headers.add("Content-type", "application/x-www-form-urlencoded;charset=utf-8");
         ResponseEntity<Map> kakaoResponse = restTemplate.postForEntity(kakaoUserInfoUri, new HttpEntity<>(headers), Map.class);
 
