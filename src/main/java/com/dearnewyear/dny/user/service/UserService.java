@@ -3,7 +3,7 @@ package com.dearnewyear.dny.user.service;
 import com.dearnewyear.dny.album.domain.Album;
 import com.dearnewyear.dny.album.repository.AlbumRepository;
 import com.dearnewyear.dny.common.error.ErrorCode;
-import com.dearnewyear.dny.common.error.exception.CustomException;
+import com.dearnewyear.dny.common.error.CustomException;
 import com.dearnewyear.dny.common.jwt.JwtTokenProvider;
 import com.dearnewyear.dny.user.domain.User;
 import com.dearnewyear.dny.user.dto.UserInfo;

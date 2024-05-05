@@ -1,6 +1,5 @@
-package com.dearnewyear.dny.common.error.exception;
+package com.dearnewyear.dny.common.error;
 
-import com.dearnewyear.dny.common.error.ErrorCode;
 import lombok.Getter;
 
 @Getter

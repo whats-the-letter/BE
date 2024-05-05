@@ -5,7 +5,7 @@ import com.dearnewyear.dny.album.dto.AlbumInfo;
 import com.dearnewyear.dny.album.dto.request.AlbumRequest;
 import com.dearnewyear.dny.album.repository.AlbumRepository;
 import com.dearnewyear.dny.common.error.ErrorCode;
-import com.dearnewyear.dny.common.error.exception.CustomException;
+import com.dearnewyear.dny.common.error.CustomException;
 import com.dearnewyear.dny.common.jwt.JwtTokenProvider;
 import com.dearnewyear.dny.common.service.S3Service;
 import com.dearnewyear.dny.music.domain.Music;

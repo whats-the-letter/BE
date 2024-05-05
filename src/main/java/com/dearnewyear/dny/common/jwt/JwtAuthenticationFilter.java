@@ -1,6 +1,6 @@
 package com.dearnewyear.dny.common.jwt;
 
-import com.dearnewyear.dny.common.error.exception.CustomException;
+import com.dearnewyear.dny.common.error.CustomException;
 import java.io.IOException;
 import javax.servlet.FilterChain;
 import javax.servlet.ServletException;

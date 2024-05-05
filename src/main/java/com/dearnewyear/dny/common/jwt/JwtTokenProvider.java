@@ -1,7 +1,7 @@
 package com.dearnewyear.dny.common.jwt;
 
 import com.dearnewyear.dny.common.error.ErrorCode;
-import com.dearnewyear.dny.common.error.exception.CustomException;
+import com.dearnewyear.dny.common.error.CustomException;
 import com.dearnewyear.dny.user.domain.User;
 import com.dearnewyear.dny.user.repository.UserRepository;
 import io.jsonwebtoken.JwtParser;

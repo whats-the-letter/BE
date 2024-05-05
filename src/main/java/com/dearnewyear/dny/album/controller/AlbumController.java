@@ -5,7 +5,7 @@ import com.dearnewyear.dny.album.dto.request.AlbumRequest;
 import com.dearnewyear.dny.album.dto.response.AlbumResponse;
 import com.dearnewyear.dny.album.dto.response.CollectionResponse;
 import com.dearnewyear.dny.album.service.AlbumService;
-import com.dearnewyear.dny.common.error.exception.CustomException;
+import com.dearnewyear.dny.common.error.CustomException;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 import io.swagger.annotations.ApiResponses;

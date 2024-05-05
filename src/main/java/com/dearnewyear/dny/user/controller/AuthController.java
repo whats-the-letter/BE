@@ -1,6 +1,6 @@
 package com.dearnewyear.dny.user.controller;
 
-import com.dearnewyear.dny.common.error.exception.CustomException;
+import com.dearnewyear.dny.common.error.CustomException;
 import com.dearnewyear.dny.user.dto.UserInfo;
 import com.dearnewyear.dny.user.dto.request.SignupRequest;
 import com.dearnewyear.dny.user.dto.response.UserInfoResponse;

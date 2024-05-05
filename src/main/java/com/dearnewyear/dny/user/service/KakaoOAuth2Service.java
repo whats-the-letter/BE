@@ -1,8 +1,7 @@
 package com.dearnewyear.dny.user.service;
 
 import com.dearnewyear.dny.common.error.ErrorCode;
-import com.dearnewyear.dny.common.error.exception.CustomException;
-import com.dearnewyear.dny.user.dto.UserInfo;
+import com.dearnewyear.dny.common.error.CustomException;
 import java.util.Map;
 import javax.servlet.http.HttpServletResponse;
 import lombok.RequiredArgsConstructor;

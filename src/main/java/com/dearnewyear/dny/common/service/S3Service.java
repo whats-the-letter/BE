@@ -1,7 +1,7 @@
 package com.dearnewyear.dny.common.service;
 
 import com.dearnewyear.dny.common.error.ErrorCode;
-import com.dearnewyear.dny.common.error.exception.CustomException;
+import com.dearnewyear.dny.common.error.CustomException;
 import java.io.IOException;
 import java.util.UUID;
 import lombok.RequiredArgsConstructor;
