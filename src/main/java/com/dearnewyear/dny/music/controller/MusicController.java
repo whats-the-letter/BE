@@ -1,6 +1,5 @@
 package com.dearnewyear.dny.music.controller;
 
-import com.dearnewyear.dny.common.error.exception.CustomException;
 import com.dearnewyear.dny.music.dto.request.AddMusicRequest;
 import com.dearnewyear.dny.music.dto.response.MusicListResponse;
 import com.dearnewyear.dny.music.service.MusicService;
