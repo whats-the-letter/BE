@@ -8,10 +8,10 @@ import com.dearnewyear.dny.user.service.UserService;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 import io.swagger.annotations.ApiResponses;
+import java.util.Map;
 import javax.servlet.http.HttpServletResponse;
 import javax.validation.Valid;
 import lombok.RequiredArgsConstructor;
-import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.ModelAttribute;
@@ -29,9 +29,6 @@ public class AuthController {
 
     private final KakaoOAuth2Service kakaoOAuth2Service;
     private final UserService userService;
-
-    @Value("${auth.header.refresh}")
-    private String refreshHeader;
 
     @ApiOperation(value = "회원가입")
     @ApiResponses({
@@ -52,11 +49,12 @@ public class AuthController {
             @io.swagger.annotations.ApiResponse(code = 400, message = "유효하지 않은 코드")
     })
     @GetMapping("/login/kakao/code")
-    public ResponseEntity<UserInfoResponse> kakaoLogin(@RequestParam("code") String code, HttpServletResponse response) {
-        try {
-            response.setHeader("Content-Type", "application/json");
-            String accessToken = kakaoOAuth2Service.getAccessToken(code);
-            UserInfo userInfo = kakaoOAuth2Service.getKakaoUser(accessToken, response);
+    public ResponseEntity<UserInfoResponse> kakaoLogin(@RequestParam("code") String code,
+            HttpServletResponse response) {
+        response.setHeader("Content-Type", "application/json");
+        String accessToken = kakaoOAuth2Service.getAccessToken(code);
+        Map<String, Object> kakaoUser = kakaoOAuth2Service.getKakaoUser(accessToken);
+        UserInfo userInfo = userService.loginUser(kakaoUser, response);
 
         if (userInfo.getUserName() == null)
             return ResponseEntity.status(404).body(new UserInfoResponse(userInfo, "회원가입 필요"));

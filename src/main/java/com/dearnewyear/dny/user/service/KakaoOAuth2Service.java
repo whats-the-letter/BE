@@ -3,7 +3,6 @@ package com.dearnewyear.dny.user.service;
 import com.dearnewyear.dny.common.error.ErrorCode;
 import com.dearnewyear.dny.common.error.CustomException;
 import java.util.Map;
-import javax.servlet.http.HttpServletResponse;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.HttpEntity;
@@ -41,7 +40,7 @@ public class KakaoOAuth2Service {
     @Value("${auth.header.authorization}")
     private String authHeader;
 
-    private final UserService userService;
+    private final RestTemplate restTemplate = new RestTemplate();
 
     public String getAccessToken(String code) {
         RestTemplate restTemplate = new RestTemplate();
@@ -57,7 +56,8 @@ public class KakaoOAuth2Service {
         headers.setContentType(MediaType.APPLICATION_FORM_URLENCODED);
 
         HttpEntity<MultiValueMap<String, String>> request = new HttpEntity<>(params, headers);
-        ResponseEntity<Map> response = restTemplate.postForEntity(kakaoTokenUri, request, Map.class);
+        ResponseEntity<Map> response = restTemplate.postForEntity(kakaoTokenUri, request,
+                Map.class);
 
         if (response.getStatusCode() == HttpStatus.OK) {
             return (String) response.getBody().get("access_token");
@@ -66,22 +66,21 @@ public class KakaoOAuth2Service {
         }
     }
 
-    public UserInfo getKakaoUser(String token, HttpServletResponse response) {
-        RestTemplate restTemplate = new RestTemplate();
-        HttpHeaders headers = new HttpHeaders();
-        headers.add(authHeader, authHeaderPrefix + " " + token);
-        headers.add("Content-type", "application/x-www-form-urlencoded;charset=utf-8");
-        ResponseEntity<Map> kakaoResponse = restTemplate.postForEntity(kakaoUserInfoUri, new HttpEntity<>(headers), Map.class);
+    public Map<String, Object> getKakaoUser(String token) {
+        HttpHeaders headers = getHeaders(token);
+        ResponseEntity<Map> kakaoResponse = restTemplate.postForEntity(kakaoUserInfoUri,
+                new HttpEntity<>(headers), Map.class);
 
-        try {
-            if (kakaoResponse.getStatusCode() != HttpStatus.OK)
-                throw new Exception();
-
-            Map<String, Object> kakaoAccount = (Map<String, Object>) kakaoResponse.getBody().get("kakao_account");
-            String email = (String) kakaoAccount.get("email");
-            return userService.loginUser(email, response);
-        } catch (Exception e) {
+        if (kakaoResponse.getStatusCode() != HttpStatus.OK) {
             throw new CustomException(ErrorCode.KAKAO_OAUTH2_ERROR);
         }
+        return (Map<String, Object>) kakaoResponse.getBody().get("kakao_account");
+    }
+
+    public HttpHeaders getHeaders(String accessToken) {
+        HttpHeaders headers = new HttpHeaders();
+        headers.add(authHeader, authHeaderPrefix + " " + accessToken);
+        headers.add("Content-type", "application/x-www-form-urlencoded;charset=utf-8");
+        return headers;
     }
 }

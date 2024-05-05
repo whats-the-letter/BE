@@ -11,6 +11,7 @@ import com.dearnewyear.dny.user.dto.request.SignupRequest;
 import com.dearnewyear.dny.user.repository.UserRepository;
 import java.util.Collections;
 import java.util.List;
+import java.util.Map;
 import java.util.Optional;
 import java.util.stream.Collectors;
 import javax.servlet.http.HttpServletResponse;
@@ -47,7 +48,12 @@ public class UserService {
         return getUserInfo(response, user);
     }
 
-    public UserInfo loginUser(String email, HttpServletResponse response) {
+    public UserInfo loginUser(Map<String, Object> kakaoUser, HttpServletResponse response) {
+        String email = (String) kakaoUser.get("email");
+        if (email == null) {
+            throw new CustomException(ErrorCode.INVALID_USER_PARAMS);
+        }
+
         Optional<User> user = userRepository.findByEmail(email);
         if (user.isPresent()) {
             return getUserInfo(response, user.get());
@@ -63,21 +69,12 @@ public class UserService {
         response.setHeader(authHeader, authHeaderPrefix + " " + newAccessToken);
     }
 
-    public UserInfo getOtherUserInfo(String userId) {
-        User user = userRepository.findById(userId)
-                .orElseThrow(() -> new CustomException(ErrorCode.USER_NOT_FOUND));
-        return UserInfo.builder()
-                .userId(user.getUserId())
-                .userName(user.getUserName())
-                .mainBackground(String.valueOf(user.getMainBackground()))
-                .mainLp(String.valueOf(user.getMainLp()))
-                .playlist(getPlaylist(user))
-                .build();
-    }
-
     private UserInfo getUserInfo(HttpServletResponse response, User user) {
         String accessToken = jwtTokenProvider.createAccessToken(user);
         String refreshToken = jwtTokenProvider.createRefreshToken(user);
+
+        System.out.println("accessToken: " + accessToken);
+        System.out.println("refreshToken: " + refreshToken);
 
         response.setHeader(authHeader, authHeaderPrefix + " " + accessToken);
         response.setHeader(refreshHeader, refreshToken);
@@ -85,6 +82,18 @@ public class UserService {
                 .userId(user.getUserId())
                 .userName(user.getUserName())
                 .email(user.getEmail())
+                .mainBackground(String.valueOf(user.getMainBackground()))
+                .mainLp(String.valueOf(user.getMainLp()))
+                .playlist(getPlaylist(user))
+                .build();
+    }
+
+    public UserInfo getOtherUserInfo(String userId) {
+        User user = userRepository.findById(userId)
+                .orElseThrow(() -> new CustomException(ErrorCode.USER_NOT_FOUND));
+        return UserInfo.builder()
+                .userId(user.getUserId())
+                .userName(user.getUserName())
                 .mainBackground(String.valueOf(user.getMainBackground()))
                 .mainLp(String.valueOf(user.getMainLp()))
                 .playlist(getPlaylist(user))
