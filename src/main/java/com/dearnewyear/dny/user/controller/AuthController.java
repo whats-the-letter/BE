@@ -1,6 +1,5 @@
 package com.dearnewyear.dny.user.controller;
 
-import com.dearnewyear.dny.common.error.exception.CustomException;
 import com.dearnewyear.dny.user.dto.UserInfo;
 import com.dearnewyear.dny.user.dto.request.SignupRequest;
 import com.dearnewyear.dny.user.dto.response.UserInfoResponse;
@@ -9,10 +8,10 @@ import com.dearnewyear.dny.user.service.UserService;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 import io.swagger.annotations.ApiResponses;
+import java.util.Map;
 import javax.servlet.http.HttpServletResponse;
 import javax.validation.Valid;
 import lombok.RequiredArgsConstructor;
-import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.ModelAttribute;
@@ -31,22 +30,16 @@ public class AuthController {
     private final KakaoOAuth2Service kakaoOAuth2Service;
     private final UserService userService;
 
-    @Value("${auth.header.refresh}")
-    private String refreshHeader;
-
     @ApiOperation(value = "회원가입")
     @ApiResponses({
             @io.swagger.annotations.ApiResponse(code = 201, message = "회원가입 성공"),
             @io.swagger.annotations.ApiResponse(code = 400, message = "회원가입 실패 또는 유효성 검사 실패"),
     })
     @PostMapping("/signup")
-    public ResponseEntity<UserInfoResponse> signup(@ModelAttribute @Valid SignupRequest request, HttpServletResponse response) {
-        try {
-            UserInfo userInfo = userService.signupAndLoginUser(request, response);
-            return ResponseEntity.status(201).body(new UserInfoResponse(userInfo, null));
-        } catch (CustomException e) {
-            return ResponseEntity.status(e.getErrorCode().getStatus()).body(new UserInfoResponse(null, e.getMessage()));
-        }
+    public ResponseEntity<UserInfoResponse> signup(@ModelAttribute @Valid SignupRequest request,
+            HttpServletResponse response) {
+        UserInfo userInfo = userService.signupAndLoginUser(request, response);
+        return ResponseEntity.status(201).body(new UserInfoResponse(userInfo, null));
     }
 
     @ApiOperation(value = "카카오 인가코드로 DNY 로그인")
@@ -56,18 +49,17 @@ public class AuthController {
             @io.swagger.annotations.ApiResponse(code = 400, message = "유효하지 않은 코드")
     })
     @GetMapping("/login/kakao/code")
-    public ResponseEntity<UserInfoResponse> kakaoLogin(@RequestParam("code") String code, HttpServletResponse response) {
-        try {
-            response.setHeader("Content-Type", "application/json");
-            String accessToken = kakaoOAuth2Service.getAccessToken(code);
-            UserInfo userInfo = kakaoOAuth2Service.getKakaoUser(accessToken, response);
+    public ResponseEntity<UserInfoResponse> kakaoLogin(@RequestParam("code") String code,
+            HttpServletResponse response) {
+        response.setHeader("Content-Type", "application/json");
+        String accessToken = kakaoOAuth2Service.getAccessToken(code);
+        Map<String, Object> kakaoUser = kakaoOAuth2Service.getKakaoUser(accessToken);
+        UserInfo userInfo = userService.loginUser(kakaoUser, response);
 
-            if (userInfo.getUserName() == null)
-                return ResponseEntity.status(404).body(new UserInfoResponse(userInfo, "회원가입 필요"));
-            return ResponseEntity.ok(new UserInfoResponse(userInfo, null));
-        } catch (CustomException e) {
-            return ResponseEntity.status(e.getErrorCode().getStatus()).body(new UserInfoResponse(null, e.getMessage()));
-        }
+        if (userInfo.getUserName() == null)
+            return ResponseEntity.status(404).body(new UserInfoResponse(userInfo, "회원가입 필요"));
+        return ResponseEntity.ok(new UserInfoResponse(userInfo, null));
+
     }
 
     @ApiOperation(value = "RefreshToken을 통한 AccessToken 갱신")
@@ -76,12 +68,9 @@ public class AuthController {
             @io.swagger.annotations.ApiResponse(code = 401, message = "AccessToken 갱신 실패")
     })
     @PostMapping("/renew")
-    public ResponseEntity<String> renewToken(@RequestHeader("#{@refreshHeader}") String refreshToken, HttpServletResponse response) {
-        try {
-            userService.renewToken(refreshToken, response);
-            return ResponseEntity.ok("AccessToken 갱신 성공");
-        } catch (CustomException e) {
-            return ResponseEntity.status(e.getErrorCode().getStatus()).body(e.getMessage());
-        }
+    public ResponseEntity<String> renewToken(
+            @RequestHeader("#{@refreshHeader}") String refreshToken, HttpServletResponse response) {
+        userService.renewToken(refreshToken, response);
+        return ResponseEntity.ok("AccessToken 갱신 성공");
     }
 }

@@ -1,6 +1,5 @@
 package com.dearnewyear.dny.music.controller;
 
-import com.dearnewyear.dny.common.error.exception.CustomException;
 import com.dearnewyear.dny.music.dto.request.AddMusicRequest;
 import com.dearnewyear.dny.music.dto.response.MusicListResponse;
 import com.dearnewyear.dny.music.service.MusicService;
@@ -31,12 +30,8 @@ public class MusicController {
     })
     @GetMapping("/list")
     public ResponseEntity<MusicListResponse> getMusicList() {
-        try {
-            MusicListResponse response = musicService.getMusicList();
-            return ResponseEntity.ok(response);
-        } catch (CustomException e) {
-            return ResponseEntity.status(e.getErrorCode().getStatus()).body(new MusicListResponse(null, e.getMessage()));
-        }
+        MusicListResponse response = musicService.getMusicList();
+        return ResponseEntity.ok(response);
     }
 
     @ApiOperation(value = "음악 추가")
@@ -47,11 +42,7 @@ public class MusicController {
     })
     @PostMapping("/add")
     public ResponseEntity<String> addMusic(@ModelAttribute @Valid AddMusicRequest addMusicRequest) {
-        try {
-            musicService.addMusic(addMusicRequest);
-            return ResponseEntity.status(201).body("음악 추가 성공");
-        } catch (CustomException e) {
-            return ResponseEntity.status(e.getErrorCode().getStatus()).body(e.getMessage());
-        }
+        musicService.addMusic(addMusicRequest);
+        return ResponseEntity.status(201).body("음악 추가 성공");
     }
 }

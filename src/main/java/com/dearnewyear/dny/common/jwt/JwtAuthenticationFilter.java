@@ -1,9 +1,9 @@
 package com.dearnewyear.dny.common.jwt;
 
-import com.dearnewyear.dny.common.error.exception.CustomException;
+import com.dearnewyear.dny.common.error.ErrorCode;
+import com.dearnewyear.dny.common.error.ErrorResponse;
 import java.io.IOException;
 import javax.servlet.FilterChain;
-import javax.servlet.ServletException;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import lombok.RequiredArgsConstructor;
@@ -22,18 +22,19 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
 
     @Override
     protected void doFilterInternal(HttpServletRequest request, HttpServletResponse response,
-            FilterChain filterChain) throws ServletException, IOException {
-        String accessToken = jwtTokenProvider.getAccessToken(request);
-
+            FilterChain filterChain) throws IOException {
         try {
-            if (accessToken != null && jwtTokenProvider.validateToken(accessToken))
+            String accessToken = jwtTokenProvider.getAccessToken(request);
+            if (accessToken != null && jwtTokenProvider.validateToken(accessToken)) {
                 setAuthentication(accessToken);
-        } catch (CustomException e) {
-            response.setStatus(e.getErrorCode().getStatus());
-            response.getWriter().write(e.getMessage());
-            return;
+            }
+            filterChain.doFilter(request, response);
+        } catch (Exception e) {
+            response.setStatus(HttpServletResponse.SC_UNAUTHORIZED);
+            response.setContentType("application/json");
+            response.setCharacterEncoding("utf-8");
+            response.getWriter().write(new ErrorResponse(ErrorCode.INVALID_TOKEN).toString());
         }
-        filterChain.doFilter(request, response);
     }
 
     private void setAuthentication(String accessToken) {
