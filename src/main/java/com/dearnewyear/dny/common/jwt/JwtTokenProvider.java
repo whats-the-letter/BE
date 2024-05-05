@@ -86,12 +86,16 @@ public class JwtTokenProvider {
             jwtParser.parseClaimsJws(token);
             return true;
         } catch (Exception e) {
-            return false;
+            throw new CustomException(ErrorCode.INVALID_TOKEN);
         }
     }
 
     public String getUserId(String token) {
-        return jwtParser.parseClaimsJws(token).getBody().get("userId", String.class);
+        try {
+            return jwtParser.parseClaimsJws(token).getBody().get("userId", String.class);
+        } catch (Exception e) {
+            throw new CustomException(ErrorCode.INVALID_TOKEN);
+        }
     }
 
     public String getAccessToken(HttpServletRequest request) {

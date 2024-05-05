@@ -1,6 +1,5 @@
 package com.dearnewyear.dny.user.controller;
 
-import com.dearnewyear.dny.common.error.CustomException;
 import com.dearnewyear.dny.user.dto.UserInfo;
 import com.dearnewyear.dny.user.dto.response.UserInfoResponse;
 import com.dearnewyear.dny.user.service.UserService;
@@ -30,11 +29,7 @@ public class UserController {
     })
     @GetMapping("/main/{userId}")
     public ResponseEntity<UserInfoResponse> getMainInfo(@PathVariable String userId) {
-        try {
-            UserInfo userInfo = userService.getOtherUserInfo(userId);
-            return ResponseEntity.ok(new UserInfoResponse(userInfo, null));
-        } catch (CustomException e) {
-            return ResponseEntity.status(e.getErrorCode().getStatus()).body(new UserInfoResponse(null, e.getMessage()));
-        }
+        UserInfo userInfo = userService.getOtherUserInfo(userId);
+        return ResponseEntity.ok(new UserInfoResponse(userInfo, null));
     }
 }

@@ -5,7 +5,6 @@ import com.dearnewyear.dny.album.dto.request.AlbumRequest;
 import com.dearnewyear.dny.album.dto.response.AlbumResponse;
 import com.dearnewyear.dny.album.dto.response.CollectionResponse;
 import com.dearnewyear.dny.album.service.AlbumService;
-import com.dearnewyear.dny.common.error.CustomException;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 import io.swagger.annotations.ApiResponses;
@@ -37,13 +36,10 @@ public class AlbumController {
             @io.swagger.annotations.ApiResponse(code = 404, message = "앨범 보내기 실패")
     })
     @PostMapping("/send")
-    public ResponseEntity<AlbumResponse> sendAlbum(@ModelAttribute @Valid AlbumRequest albumRequest, HttpServletRequest request) {
-        try {
-            AlbumInfo albumInfo = albumService.sendAlbum(albumRequest, request);
-            return ResponseEntity.ok(new AlbumResponse(albumInfo, null));
-        } catch (CustomException e) {
-            return ResponseEntity.status(e.getErrorCode().getStatus()).body(new AlbumResponse(null, e.getMessage()));
-        }
+    public ResponseEntity<AlbumResponse> sendAlbum(@ModelAttribute @Valid AlbumRequest albumRequest,
+            HttpServletRequest request) {
+        AlbumInfo albumInfo = albumService.sendAlbum(albumRequest, request);
+        return ResponseEntity.ok(new AlbumResponse(albumInfo, null));
     }
 
     @ApiOperation(value = "앨범 조회")
@@ -53,13 +49,10 @@ public class AlbumController {
             @io.swagger.annotations.ApiResponse(code = 404, message = "앨범 조회 실패")
     })
     @GetMapping("/view/{albumId}")
-    public ResponseEntity<AlbumResponse> viewAlbum(@PathVariable String albumId, HttpServletRequest request) {
-        try {
-            AlbumInfo albumInfo = albumService.viewAlbum(albumId, request);
-            return ResponseEntity.ok(new AlbumResponse(albumInfo, null));
-        } catch (CustomException e) {
-            return ResponseEntity.status(e.getErrorCode().getStatus()).body(new AlbumResponse(null, e.getMessage()));
-        }
+    public ResponseEntity<AlbumResponse> viewAlbum(@PathVariable String albumId,
+            HttpServletRequest request) {
+        AlbumInfo albumInfo = albumService.viewAlbum(albumId, request);
+        return ResponseEntity.ok(new AlbumResponse(albumInfo, null));
     }
 
     @ApiOperation(value = "컬렉션 조회")
@@ -70,12 +63,8 @@ public class AlbumController {
     })
     @GetMapping("/collection")
     public ResponseEntity<CollectionResponse> viewCollection(HttpServletRequest request) {
-        try {
-            List<AlbumInfo> collection = albumService.viewCollection(request);
-            return ResponseEntity.ok(new CollectionResponse(collection, null));
-        } catch (CustomException e) {
-            return ResponseEntity.status(e.getErrorCode().getStatus()).body(new CollectionResponse(null, e.getMessage()));
-        }
+        List<AlbumInfo> collection = albumService.viewCollection(request);
+        return ResponseEntity.ok(new CollectionResponse(collection, null));
     }
 
     @ApiOperation(value = "내 컬렉션에 추가")
@@ -85,12 +74,9 @@ public class AlbumController {
             @io.swagger.annotations.ApiResponse(code = 404, message = "컬렉션에 추가 실패")
     })
     @PutMapping("/collection/{albumId}")
-    public ResponseEntity<String> addCollection(@PathVariable String albumId, HttpServletRequest request) {
-        try {
-            albumService.addAlbumToCollection(albumId, request);
-            return ResponseEntity.ok("컬렉션에 추가 성공");
-        } catch (CustomException e) {
-            return ResponseEntity.status(e.getErrorCode().getStatus()).body(e.getMessage());
-        }
+    public ResponseEntity<String> addCollection(@PathVariable String albumId,
+            HttpServletRequest request) {
+        albumService.addAlbumToCollection(albumId, request);
+        return ResponseEntity.ok("컬렉션에 추가 성공");
     }
 }

@@ -1,6 +1,5 @@
 package com.dearnewyear.dny.user.controller;
 
-import com.dearnewyear.dny.common.error.CustomException;
 import com.dearnewyear.dny.user.dto.UserInfo;
 import com.dearnewyear.dny.user.dto.request.SignupRequest;
 import com.dearnewyear.dny.user.dto.response.UserInfoResponse;
@@ -40,13 +39,10 @@ public class AuthController {
             @io.swagger.annotations.ApiResponse(code = 400, message = "회원가입 실패 또는 유효성 검사 실패"),
     })
     @PostMapping("/signup")
-    public ResponseEntity<UserInfoResponse> signup(@ModelAttribute @Valid SignupRequest request, HttpServletResponse response) {
-        try {
-            UserInfo userInfo = userService.signupAndLoginUser(request, response);
-            return ResponseEntity.status(201).body(new UserInfoResponse(userInfo, null));
-        } catch (CustomException e) {
-            return ResponseEntity.status(e.getErrorCode().getStatus()).body(new UserInfoResponse(null, e.getMessage()));
-        }
+    public ResponseEntity<UserInfoResponse> signup(@ModelAttribute @Valid SignupRequest request,
+            HttpServletResponse response) {
+        UserInfo userInfo = userService.signupAndLoginUser(request, response);
+        return ResponseEntity.status(201).body(new UserInfoResponse(userInfo, null));
     }
 
     @ApiOperation(value = "카카오 인가코드로 DNY 로그인")
@@ -62,12 +58,10 @@ public class AuthController {
             String accessToken = kakaoOAuth2Service.getAccessToken(code);
             UserInfo userInfo = kakaoOAuth2Service.getKakaoUser(accessToken, response);
 
-            if (userInfo.getUserName() == null)
-                return ResponseEntity.status(404).body(new UserInfoResponse(userInfo, "회원가입 필요"));
-            return ResponseEntity.ok(new UserInfoResponse(userInfo, null));
-        } catch (CustomException e) {
-            return ResponseEntity.status(e.getErrorCode().getStatus()).body(new UserInfoResponse(null, e.getMessage()));
-        }
+        if (userInfo.getUserName() == null)
+            return ResponseEntity.status(404).body(new UserInfoResponse(userInfo, "회원가입 필요"));
+        return ResponseEntity.ok(new UserInfoResponse(userInfo, null));
+
     }
 
     @ApiOperation(value = "RefreshToken을 통한 AccessToken 갱신")
@@ -76,12 +70,9 @@ public class AuthController {
             @io.swagger.annotations.ApiResponse(code = 401, message = "AccessToken 갱신 실패")
     })
     @PostMapping("/renew")
-    public ResponseEntity<String> renewToken(@RequestHeader("#{@refreshHeader}") String refreshToken, HttpServletResponse response) {
-        try {
-            userService.renewToken(refreshToken, response);
-            return ResponseEntity.ok("AccessToken 갱신 성공");
-        } catch (CustomException e) {
-            return ResponseEntity.status(e.getErrorCode().getStatus()).body(e.getMessage());
-        }
+    public ResponseEntity<String> renewToken(
+            @RequestHeader("#{@refreshHeader}") String refreshToken, HttpServletResponse response) {
+        userService.renewToken(refreshToken, response);
+        return ResponseEntity.ok("AccessToken 갱신 성공");
     }
 }
