@@ -36,6 +36,13 @@ jobs:
       - name: Push the Docker image
         run: docker push ${{ secrets.DOCKERHUB_USERNAME }}/dny-be:${{ env.TIME }}
 
+      - name: Configure AWS credentials
+        uses: aws-actions/configure-aws-credentials@v1
+        with:
+          aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY_ID }}
+          aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+          aws-region: ${{ secrets.AWS_REGION }}
+
       - name: Deploy to AWS
         uses: appleboy/ssh-action@v1.0.3
         with:
@@ -46,5 +53,11 @@ jobs:
             docker rm -f dny-be-container
             docker login -u ${{ secrets.DOCKERHUB_USERNAME }} -p ${{ secrets.DOCKERHUB_TOKEN }}
             docker pull ${{ secrets.DOCKERHUB_USERNAME }}/dny-be:${{ env.TIME }}
-            docker run -d --name dny-be-container -p 80:8080 ${{ secrets.DOCKERHUB_USERNAME }}/dny-be:${{ env.TIME }}
+            docker run -d --name dny-be-container -p 80:8080 \
+            --log-driver=awslogs \
+            --log-opt awslogs-region=${{ secrets.AWS_REGION }} \
+            --log-opt awslogs-group=dny-logs \
+            --log-opt awslogs-stream=dny-be-stream \
+            --log-opt awslogs-create-group=true \
+            ${{ secrets.DOCKERHUB_USERNAME }}/dny-be:${{ env.TIME }}
             docker image prune -f
