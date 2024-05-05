@@ -75,9 +75,6 @@ public class UserService {
         String accessToken = jwtTokenProvider.createAccessToken(user);
         String refreshToken = jwtTokenProvider.createRefreshToken(user);
 
-        System.out.println("accessToken: " + accessToken);
-        System.out.println("refreshToken: " + refreshToken);
-
         response.setHeader(authHeader, authHeaderPrefix + " " + accessToken);
         response.setHeader(refreshHeader, refreshToken);
         return UserInfo.builder()
