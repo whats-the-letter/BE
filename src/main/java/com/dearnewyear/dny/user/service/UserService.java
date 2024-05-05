@@ -38,6 +38,8 @@ public class UserService {
     @Value("${auth.header.refresh}")
     private String refreshHeader;
 
+    private final int PLAYLIST_COUNT = 7;
+
     public UserInfo signupAndLoginUser(SignupRequest request, HttpServletResponse response) {
         if (userRepository.findByEmail(request.getEmail()).isPresent())
             throw new CustomException(ErrorCode.USER_ALREADY_EXIST);
@@ -101,15 +103,11 @@ public class UserService {
     }
 
     private List<String> getPlaylist(User user) {
-        int PLAYLIST_COUNT = 7;
-
         List<Album> albums = albumRepository.findByToUserId(user.getUserId());
         Collections.shuffle(albums);
 
-        int count = Math.min(albums.size(), PLAYLIST_COUNT);
-        List<Album> selectedAlbums = albums.subList(0, count);
-
-        return selectedAlbums.stream()
+        return albums.stream()
+                .limit(PLAYLIST_COUNT)
                 .map(Album::getFromName)
                 .collect(Collectors.toList());
     }
