@@ -58,6 +58,5 @@ jobs:
             --log-opt awslogs-region=${{ secrets.AWS_REGION }} \
             --log-opt awslogs-group=dny-logs \
             --log-opt awslogs-stream=dny-be-stream \
-            --log-opt awslogs-create-group=true \
             ${{ secrets.DOCKERHUB_USERNAME }}/dny-be:${{ env.TIME }}
             docker image prune -f
