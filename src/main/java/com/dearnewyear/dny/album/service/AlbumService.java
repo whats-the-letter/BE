@@ -38,8 +38,10 @@ public class AlbumService {
         User toUser = findUserByIdOrNull(albumRequest.getToUserId());
         Music music = findMusicById(albumRequest.getMusicId());
 
-        String frontImgName = s3Service.upload(albumRequest.getFrontImage());
-        String backImgName = s3Service.upload(albumRequest.getBackImage());
+        String frontImgName = albumRequest.getFrontImage() != null ?
+                s3Service.upload(albumRequest.getFrontImage()) : null;
+        String backImgName = albumRequest.getBackImage() != null ?
+                s3Service.upload(albumRequest.getBackImage()) : null;
 
         Album album = Album.builder()
                 .albumCover(albumRequest.getAlbumCover())
@@ -97,7 +99,8 @@ public class AlbumService {
         User fromUser = findUserById(album.getFromUserId());
         User toUser = findUserByIdOrNull(album.getToUserId());
 
-        if (!isFromUser(fromUser, authentication) && (toUser != null && !isToUser(toUser, authentication)))
+        if (!isFromUser(fromUser, authentication) && (toUser != null && !isToUser(toUser,
+                authentication)))
             throw new CustomException(ErrorCode.ALBUM_NOT_AUTHORIZED);
     }
 
