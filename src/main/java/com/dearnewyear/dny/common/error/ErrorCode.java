@@ -50,7 +50,8 @@ public enum ErrorCode {
      */
     MUSIC_NOT_FOUND(404, "M001", "음악을 찾을 수 없습니다."),
     INVALID_MUSIC_NAME(400, "M002", "음악 이름 형식이 올바르지 않습니다."),
-    INVALID_MUSIC_LINK(400, "M003", "음악 링크 형식이 올바르지 않습니다.");
+    INVALID_MUSIC_LINK(400, "M003", "음악 링크 형식이 올바르지 않습니다."),
+    MUSIC_ALREADY_EXIST(400, "M004", "이미 존재하는 음악입니다.");
 
     private final int status;
     private final String code;
