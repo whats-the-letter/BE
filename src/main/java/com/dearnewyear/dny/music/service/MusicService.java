@@ -1,5 +1,7 @@
 package com.dearnewyear.dny.music.service;
 
+import com.dearnewyear.dny.common.error.CustomException;
+import com.dearnewyear.dny.common.error.ErrorCode;
 import com.dearnewyear.dny.music.domain.Music;
 import com.dearnewyear.dny.music.dto.MusicInfo;
 import com.dearnewyear.dny.music.dto.request.AddMusicRequest;
@@ -27,6 +29,10 @@ public class MusicService {
     }
 
     public void addMusic(AddMusicRequest addMusicRequest) {
+        musicRepository.findByYoutubeUrlId(addMusicRequest.getYoutubeUrlId())
+                .ifPresent(music -> {
+                    throw new CustomException(ErrorCode.MUSIC_ALREADY_EXIST);
+                });
         Music music = new Music(addMusicRequest);
         musicRepository.save(music);
     }
