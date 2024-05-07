@@ -8,6 +8,8 @@ public enum AlbumPhrases {
     MONEY,
     SUCCESS,
     HEALTH,
+    HBD,
+    PARENTS,
     ;
 
     public static boolean isValidAlbumPhrases(String albumPhrases) {
