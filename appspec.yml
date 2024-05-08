@@ -2,6 +2,10 @@ version: 0.0
 os: linux
 hooks:
   - AfterInstall:
+    - command: chmod +x scripts/build_and_run_docker.sh
+      timeout: 300
+      runas: root
+
     - location: scripts/build_and_run_docker.sh
       timeout: 600
       runas: root
