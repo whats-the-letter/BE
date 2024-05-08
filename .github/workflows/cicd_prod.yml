@@ -34,7 +34,7 @@ jobs:
 
       - name: Compress code
         run: |
-          zip -r code.zip .
+          zip -r source.zip .
 
       - name: Upload code to S3
         run: |
