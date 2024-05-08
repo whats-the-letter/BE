@@ -4,8 +4,8 @@ files:
   - source: /
     destination: /home/ubuntu/app
 hooks:
-  AfterInstall:
-    - location: scripts/after_install.sh
+  BeforeInstall:
+    - location: scripts/before_install.sh
       timeout: 300
       runas: root
   ApplicationStart:
