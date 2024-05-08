@@ -6,11 +6,6 @@ hooks:
       timeout: 300
       runas: root
 
-  BeforeInstall:
-    - location: scripts/cleanup.sh
-      timeout: 300
-      runas: root
-
   AfterInstall:
     - location: scripts/load_secrets.sh
       timeout: 300
