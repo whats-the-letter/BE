@@ -29,8 +29,8 @@ jobs:
 
       - name: Store secrets in Parameter Store
         run: |
-          aws ssm put-parameter --name "/aws/myregion" --value "${{ secrets.AWS_REGION }}" --type SecureString --overwrite
-          aws ssm put-parameter --name "/app/time" --value "${{ env.TIME }}" --type String --overwrite
+          aws ssm put-parameter --name "/wtl/region" --value "${{ secrets.AWS_REGION }}" --type SecureString --overwrite
+          aws ssm put-parameter --name "/wtl/time" --value "${{ env.TIME }}" --type String --overwrite
 
       - name: Compress code
         run: |
