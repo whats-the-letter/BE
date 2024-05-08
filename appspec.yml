@@ -1,13 +1,21 @@
 version: 0.0
-os: ubuntu
+os: linux
 hooks:
+  ApplicationStop:
+    - location: scripts/stop_containers.sh
+      timeout: 300
+      runas: root
+
   BeforeInstall:
-    - location: scripts/stop_container.sh
+    - location: scripts/cleanup.sh
       timeout: 300
       runas: root
-  ApplicationStart:
-    - location: scripts/start_container.sh
+
+  AfterInstall:
+    - location: scripts/load_secrets.sh
       timeout: 300
       runas: root
-      env:
-        IMAGE_URL: $IMAGE_URL
+
+    - location: scripts/build_and_run_docker.sh
+      timeout: 600
+      runas: root

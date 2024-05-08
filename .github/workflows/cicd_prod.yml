@@ -5,9 +5,6 @@ on:
     branches:
       - prod
 
-env:
-  AWS_REGION: ${{ secrets.AWS_REGION }}
-
 jobs:
   build:
     runs-on: ubuntu-latest
@@ -15,22 +12,13 @@ jobs:
       - name: Checkout
         uses: actions/checkout@v3
 
-      - name: Login to DockerHub
-        run: docker login -u ${{ secrets.DOCKERHUB_USERNAME }} -p ${{ secrets.DOCKERHUB_TOKEN }}
-
       - name: Create application.yml
         run: |
           mkdir -p src/main/resources
           echo "${{ secrets.APPLICATION_YML_PROD }}" | base64 --decode > src/main/resources/application.yml
 
       - name: Set up ENV
-        run: echo "TIME=$(date "+%Y-%m-%d-%H-%M")" >> $GITHUB_ENV
-
-      - name: Build the Docker image
-        run: docker build -t ${{ secrets.DOCKERHUB_USERNAME }}/wtl-be:${{ env.TIME }} .
-
-      - name: Push the Docker image
-        run: docker push ${{ secrets.DOCKERHUB_USERNAME }}/wtl-be:${{ env.TIME }}
+        run: echo "TIME=$(date "+%Y_%m_%d_%H_%M")" >> $GITHUB_ENV
 
       - name: Configure AWS credentials
         uses: aws-actions/configure-aws-credentials@v1
@@ -39,6 +27,19 @@ jobs:
           aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
           aws-region: ${{ secrets.AWS_REGION }}
 
+      - name: Store secrets in Parameter Store
+        run: |
+          aws ssm put-parameter --name "/aws/region" --value "${{ secrets.AWS_REGION }}" --type SecureString --overwrite
+          aws ssm put-parameter --name "/app/time" --value "${{ env.TIME }}" --type String --overwrite
+
+      - name: Compress code
+        run: |
+          zip -r code.zip .
+
+      - name: Upload code to S3
+        run: |
+          aws s3 cp code.zip s3://${{ secrets.AWS_S3_BUCKET }}/${{ github.sha }}.zip
+
       - name: Create CodeDeploy Deployment
         id: deploy
         run: |
@@ -46,7 +47,7 @@ jobs:
             --application-name ${{ secrets.AWS_CODEDEPLOY_APP_NAME }} \
             --deployment-group-name ${{ secrets.AWS_CODEDEPLOY_GROUP_NAME }} \
             --description "Deployment from GitHub Actions" \
-            --revision revisionType=IMAGE,imageUrl=${{ secrets.DOCKERHUB_USERNAME }}/wtl-be:${{ env.TIME }}
+            --revision revisionType=S3,s3Location={bucket=${{ secrets.AWS_S3_BUCKET }},key=${{ github.sha }},bundleType=zip}
 
       - name: Wait for CodeDeploy Deployment
         run: |
