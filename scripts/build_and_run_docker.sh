@@ -1,5 +1,5 @@
 #!/bin/bash
-cd /opt/codedeploy-agent/deployment-root/$DEPLOYMENT_GROUP_NAME/$DEPLOYMENT_ID/deployment-archive
+cd /opt/codedeploy-agent/deployment-root/$DEPLOYMENT_GROUP_ID/$DEPLOYMENT_ID/deployment-archive
 docker build -t wtl-be:$TIME .
 docker run -d --name wtl-be-container -p 80:8080 \
   --log-driver=awslogs \
