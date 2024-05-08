@@ -38,7 +38,7 @@ jobs:
 
       - name: Upload code to S3
         run: |
-          aws s3 cp code.zip s3://${{ secrets.AWS_S3_BUCKET }}/wtl/${{ github.sha }}.zip
+          aws s3 cp source.zip s3://${{ secrets.AWS_S3_BUCKET }}/wtl/${{ github.sha }}.zip
 
       - name: Create CodeDeploy Deployment
         id: deploy
