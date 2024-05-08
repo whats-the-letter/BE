@@ -40,16 +40,6 @@ jobs:
         run: |
           aws s3 cp code.zip s3://${{ secrets.AWS_S3_BUCKET }}/wtl/${{ github.sha }}.zip
 
-      - name: Install and Start CodeDeploy Agent
-        env:
-          AWS_ACCESS_KEY_ID: ${{ secrets.AWS_ACCESS_KEY_ID }}
-          AWS_SECRET_ACCESS_KEY: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
-        run: |
-          sudo apt-get update
-          sudo apt-get install -y awscli
-          aws deploy install --region ${{ secrets.AWS_REGION }}
-          sudo service codedeploy-agent start
-
       - name: Create CodeDeploy Deployment
         id: deploy
         run: |
