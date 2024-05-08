@@ -1,0 +1,13 @@
+version: 0.0
+os: ubuntu
+hooks:
+  BeforeInstall:
+    - location: scripts/stop_container.sh
+      timeout: 300
+      runas: root
+  ApplicationStart:
+    - location: scripts/start_container.sh
+      timeout: 300
+      runas: root
+      env:
+        IMAGE_URL: $IMAGE_URL
