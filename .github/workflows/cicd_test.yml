@@ -50,13 +50,13 @@ jobs:
           username: ${{ secrets.AWS_USERNAME }}
           key: ${{ secrets.AWS_KEY }}
           script: |
-            docker rm -f dny-be-container
-            docker login -u ${{ secrets.DOCKERHUB_USERNAME }} -p ${{ secrets.DOCKERHUB_TOKEN }}
-            docker pull ${{ secrets.DOCKERHUB_USERNAME }}/dny-be:${{ env.TIME }}
-            docker run -d --name dny-be-container -p 80:8080 \
+            sudo docker rm -f dny-be-container
+            sudo docker login -u ${{ secrets.DOCKERHUB_USERNAME }} -p ${{ secrets.DOCKERHUB_TOKEN }}
+            sudo docker pull ${{ secrets.DOCKERHUB_USERNAME }}/dny-be:${{ env.TIME }}
+            sudo docker run -d --name dny-be-container -p 80:8080 \
             --log-driver=awslogs \
             --log-opt awslogs-region=${{ secrets.AWS_REGION }} \
             --log-opt awslogs-group=dny-logs \
             --log-opt awslogs-stream=dny-be-stream \
             ${{ secrets.DOCKERHUB_USERNAME }}/dny-be:${{ env.TIME }}
-            docker image prune -f
+            sudo docker image prune -f
