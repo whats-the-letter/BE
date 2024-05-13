@@ -1,0 +1,51 @@
+name: CICD_Prod
+
+on:
+  push:
+    branches:
+      - prod
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v3
+
+      - name: Set up JDK 11
+        uses: actions/setup-java@v3
+        with:
+          java-version: '11'
+          distribution: 'adopt'
+
+      - name: Create application.yml
+        run: |
+          mkdir -p src/main/resources
+          echo "${{ secrets.APPLICATION_YML_PROD }}" | base64 --decode > src/main/resources/application.yml
+
+      - name: Build with Gradle
+        run: ./gradlew clean build
+
+      - name: Make zip file
+        run: |
+          cp build/libs/dny-0.0.1.jar app.jar
+          zip -r source.zip app.jar appspec.yml scripts
+
+      - name: Configure AWS credentials
+        uses: aws-actions/configure-aws-credentials@v1
+        with:
+          aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY_ID }}
+          aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+          aws-region: ap-northeast-2
+
+      - name: Upload zip to S3
+        run: |
+            aws s3 cp source.zip s3://${{ secrets.AWS_S3_BUCKET }}/wtl/${{ github.sha }}.zip
+
+      - name: Create CodeDeploy Deployment
+        id: deploy
+        run: |
+          aws deploy create-deployment \
+            --application-name ${{ secrets.AWS_CODEDEPLOY_APP_NAME }} \
+            --deployment-group-name ${{ secrets.AWS_CODEDEPLOY_GROUP_NAME }} \
+            --s3-location bucket=${{ secrets.AWS_S3_BUCKET }},key=wtl/${{ github.sha }}.zip,bundleType=zip
