@@ -21,13 +21,16 @@ public class S3Service {
     @Value("${cloud.aws.s3.bucket}")
     private String bucketName;
 
+    @Value("${cloud.aws.s3.image-prefix}")
+    private String imagePrefix;
+
     private final S3Client s3Client;
 
     public String upload(MultipartFile file) {
         if (file.isEmpty())
             return null;
         try {
-            String fileName = UUID.randomUUID().toString();
+            String fileName = imagePrefix + UUID.randomUUID();
             PutObjectRequest putObjectRequest = PutObjectRequest.builder()
                     .bucket(bucketName)
                     .key(fileName)
