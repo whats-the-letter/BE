@@ -50,13 +50,31 @@ jobs:
           username: ${{ secrets.AWS_USERNAME }}
           key: ${{ secrets.AWS_KEY }}
           script: |
-            sudo docker rm -f dny-be-container
+            sudo docker stop dny-be-container prometheus-container grafana-container
+            sudo docker rm -f dny-be-container prometheus-container grafana-container
+            
             sudo docker login -u ${{ secrets.DOCKERHUB_USERNAME }} -p ${{ secrets.DOCKERHUB_TOKEN }}
             sudo docker pull ${{ secrets.DOCKERHUB_USERNAME }}/dny-be:${{ env.TIME }}
+            sudo docker pull prom/prometheus:latest
+            sudo docker pull grafana/grafana:latest
+            
+            echo "${{ secrets.PROMETHEUS_YML }}" | base64 --decode > prometheus.yml
+            
             sudo docker run -d --name dny-be-container -p 80:8080 \
+            --network monitoring \
             --log-driver=awslogs \
             --log-opt awslogs-region=${{ secrets.AWS_REGION }} \
             --log-opt awslogs-group=dny-logs \
             --log-opt awslogs-stream=dny-be-stream \
             ${{ secrets.DOCKERHUB_USERNAME }}/dny-be:${{ env.TIME }}
+            
+            sudo docker run -d --name prometheus-container -p 9090:9090 \
+            --network monitoring \
+            -v ./prometheus.yml:/etc/prometheus/prometheus.yml \
+            prom/prometheus:latest
+    
+            sudo docker run -d --name grafana-container -p 3000:3000 \
+            --network monitoring \
+            grafana/grafana:latest
+            
             sudo docker image prune -f
