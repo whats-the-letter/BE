@@ -54,7 +54,7 @@ public class SecurityConfig {
                 .authorizeHttpRequests()
                 .antMatchers("/api/auth/**").permitAll()
                 .antMatchers("/api/music/**").permitAll() // Music API 테스트용
-                .antMatchers("/actuator/health").permitAll()
+                .antMatchers("/actuator/**").permitAll()
                 .anyRequest().authenticated()
                 .and()
                 .addFilterBefore(jwtAuthenticationFilter,
