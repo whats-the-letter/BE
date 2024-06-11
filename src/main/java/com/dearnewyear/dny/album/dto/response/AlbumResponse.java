@@ -1,6 +1,7 @@
 package com.dearnewyear.dny.album.dto.response;
 
 import com.dearnewyear.dny.album.dto.AlbumInfo;
+
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 
@@ -8,6 +9,6 @@ import lombok.Getter;
 @AllArgsConstructor
 public class AlbumResponse {
 
-    private AlbumInfo albumInfo;
-    private String errorMessage;
+	private AlbumInfo albumInfo;
+	private String errorMessage;
 }
