@@ -38,7 +38,7 @@ public enum ErrorCode {
      */
     ALBUM_NOT_FOUND(404, "A001", "앨범을 찾을 수 없습니다."),
     ALBUM_ALREADY_EXIST(400, "A002", "이미 존재하는 앨범입니다."),
-    ALBUM_NOT_AUTHORIZED(403, "A003", "앨범 접근 권한이 없습니다."),
+    ALBUM_NOT_AUTHORIZED(401, "A003", "앨범 접근 권한이 없습니다."),
     INVALID_ALBUM_ASSET(400, "A004", "앨범 에셋 정보가 올바르지 않습니다."),
     INVALID_ALBUM_USER(400, "A005", "앨범 사용자 정보가 올바르지 않습니다."),
     INVALID_ALBUM_NAME(400, "A006", "앨범을 보내는/받는 사용자 닉네임 형식이 올바르지 않습니다."),
