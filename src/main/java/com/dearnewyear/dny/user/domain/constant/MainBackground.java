@@ -4,13 +4,13 @@ import java.util.Arrays;
 
 public enum MainBackground {
 
-    PINK,
-    BLUE,
-    WHITE,
-    GOLD;
+	PINK,
+	BLUE,
+	WHITE,
+	GOLD;
 
-    public static boolean isValidMainBackground(String mainBackground) {
-        return Arrays.stream(MainBackground.values())
-                .anyMatch(t -> t.name().equals(mainBackground));
-    }
+	public static boolean isValidMainBackground(String mainBackground) {
+		return Arrays.stream(MainBackground.values())
+			.anyMatch(t -> t.name().equals(mainBackground));
+	}
 }
