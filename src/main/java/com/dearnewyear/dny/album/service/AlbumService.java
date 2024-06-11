@@ -101,10 +101,11 @@ public class AlbumService {
 
 		User fromUser = findUserById(album.getFromUserId());
 		User toUser = findUserByIdOrNull(album.getToUserId());
-
-		if (!isFromUser(fromUser, authentication) && (toUser != null && !isToUser(toUser,
+		if (isFromUser(fromUser, authentication) || (toUser != null && isToUser(toUser,
 			authentication)))
-			throw new CustomException(ErrorCode.ALBUM_NOT_AUTHORIZED);
+			return;
+
+		throw new CustomException(ErrorCode.ALBUM_NOT_AUTHORIZED);
 	}
 
 	private boolean isFromUser(User fromUser, Authentication authentication) {

@@ -83,7 +83,7 @@ public class JwtTokenProvider {
 	public Authentication getAuthentication(String token) {
 		User user = userRepository.findById(getUserId(token))
 			.orElseThrow(() -> new CustomException(ErrorCode.USER_NOT_FOUND));
-		return new PreAuthenticatedAuthenticationToken(user, null, Collections.emptyList());
+		return new PreAuthenticatedAuthenticationToken(user.getUserName(), null, Collections.emptyList());
 	}
 
 	public boolean validateToken(String token) {
