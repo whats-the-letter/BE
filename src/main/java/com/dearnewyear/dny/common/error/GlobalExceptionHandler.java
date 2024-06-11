@@ -8,6 +8,9 @@ import org.springframework.validation.BindException;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
 
+import lombok.extern.slf4j.Slf4j;
+
+@Slf4j
 @RestControllerAdvice
 public class GlobalExceptionHandler {
 
@@ -18,6 +21,7 @@ public class GlobalExceptionHandler {
                 .stream()
                 .map(DefaultMessageSourceResolvable::getDefaultMessage)
                 .collect(Collectors.toList());
+        log.error("BindException: {}", errorMessages);
         ErrorResponse response = new ErrorResponse(ErrorCode.INVALID_INPUT_VALUE,
                 errorMessages.toString());
         return ResponseEntity.status(ErrorCode.INVALID_INPUT_VALUE.getStatus()).body(response);
@@ -25,6 +29,7 @@ public class GlobalExceptionHandler {
 
     @ExceptionHandler(CustomException.class)
     public ResponseEntity<ErrorResponse> handleCustomException(CustomException e) {
+        log.error("CustomException: {}", e.getErrorCode());
         ErrorResponse response = new ErrorResponse(e.getErrorCode());
         return ResponseEntity.status(e.getErrorCode().getStatus()).body(response);
     }
