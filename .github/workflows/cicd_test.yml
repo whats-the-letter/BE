@@ -71,7 +71,7 @@ jobs:
             --log-opt awslogs-group=dny-logs \
             --log-opt awslogs-stream=dny-be-stream \
             ${{ secrets.DOCKERHUB_USERNAME }}/dny-be:${{ env.TIME }}
-            정
+            
             sudo docker run -d --name prometheus-container -p 9090:9090 \
             --network monitoring \
             -v ./prometheus.yml:/etc/prometheus/prometheus.yml \
