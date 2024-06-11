@@ -60,7 +60,9 @@ jobs:
             
             echo "${{ secrets.PROMETHEUS_YML }}" | base64 --decode > prometheus.yml
             
-            sudo docker network create monitoring
+            if ! sudo docker network ls | grep -q "monitoring"; then
+              sudo docker network create monitoring
+            fi
             
             sudo docker run -d --name dny-be-container -p 80:8080 \
             --network monitoring \
@@ -69,12 +71,12 @@ jobs:
             --log-opt awslogs-group=dny-logs \
             --log-opt awslogs-stream=dny-be-stream \
             ${{ secrets.DOCKERHUB_USERNAME }}/dny-be:${{ env.TIME }}
-            
+            정
             sudo docker run -d --name prometheus-container -p 9090:9090 \
             --network monitoring \
             -v ./prometheus.yml:/etc/prometheus/prometheus.yml \
             prom/prometheus:latest
-    
+            
             sudo docker run -d --name grafana-container -p 3000:3000 \
             --network monitoring \
             grafana/grafana:latest
